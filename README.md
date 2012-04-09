@@ -1,24 +1,20 @@
 amazon-simple-product-api
 ==========================
-
-Description
------------
-
 A simple Python wrapper for the Amazon.com Product Advertising API.
 
 
 Features
 --------
 
-* An object based interface to Amazon products.
-* Supports both item search and item lookup.
+* An object oriented interface to Amazon products
+* Supports both item search and item lookup
 
 
 Prerequisite
 --------------
 Before you get started, make sure you have:
 
-* Installed [Bottlenose](https://github.com/dlo/bottlenose): >>> pip install bottlenose
+* Installed [Bottlenose](https://github.com/dlo/bottlenose) (pip install bottlenose)
 * An Amazon Product Advertising account
 * An AWS account
 
@@ -44,9 +40,10 @@ Lookup::
      >>> product.get_attributes(['ItemDimensions.Width', 'ItemDimensions.Height'])
      {'ItemDimensions.Width': '450', 'ItemDimensions.Height': '34'}
 
-Please note that the API wrapper supports many other product properties as well.
+The API wrapper supports many other product attributes as well.
 
 Search::
+
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
      >>> products = amazon.search(Keywords='kindle', SearchIndex='All')
