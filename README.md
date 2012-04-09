@@ -1,4 +1,4 @@
-Amazon Simple Product API
+Amazon Simple Product API 
 ==========================
 A simple Python wrapper for the Amazon.com Product Advertising API.
 
