@@ -342,6 +342,7 @@ class AmazonProduct(object):
         """Editorial Review.
 
         Returns an editorial review text.
+
         :return:
             Editorial Review (string)
         """
