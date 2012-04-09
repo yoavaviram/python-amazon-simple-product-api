@@ -1,4 +1,4 @@
-amazon-simple-product-api
+Amazon Simple Product API
 ==========================
 A simple Python wrapper for the Amazon.com Product Advertising API.
 
@@ -10,7 +10,7 @@ Features
 * Supports both item search and item lookup
 
 
-Prerequisite
+Prerequisites
 --------------
 Before you get started, make sure you have:
 
@@ -22,7 +22,7 @@ Before you get started, make sure you have:
 Usage
 -----
 
-Lookup::
+Lookup:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
@@ -42,7 +42,7 @@ Lookup::
 
 The API wrapper supports many other product attributes as well.
 
-Search::
+Search:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
