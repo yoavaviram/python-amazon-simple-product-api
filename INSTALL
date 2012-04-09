@@ -3,6 +3,14 @@ this command from the command prompt:
 
     python setup.py install
 
+You will also need to install Bottlenose ether by cloning/downloading the repositoryi from:
+
+    https://github.com/dlo/bottlenose
+
+Or using pip:
+   
+    pip install bottlenose
+
 AS AN ALTERNATIVE, you can just copy the entire "amazon" directory to Python's
 site-packages directory, which is located wherever your Python installation
 lives. Some places you might check are:
