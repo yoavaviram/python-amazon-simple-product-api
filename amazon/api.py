@@ -3,11 +3,6 @@ from lxml import objectify, etree
 from django.conf import settings
 
 
-API = bottlenose.Amazon(settings.AWS_KEY, settings.AWS_SECRET,
-    AssociateTag=settings.AWS_ASSOCIATE_TAG)
-"""Amazon API Instance"""
-
-
 class AmazonException(Exception):
     """Base Class for Amazon Api Exceptions.
     """
@@ -15,7 +10,7 @@ class AmazonException(Exception):
 
 
 class AsinNotFound(AmazonException):
-    """ASIN Mot Found Exception.
+    """ASIN Not Found Exception.
     """
     pass
 
@@ -38,6 +33,48 @@ class NoMorePages(AmazonException):
     pass
 
 
+class AmazonAPI(object):
+    def __init__(self, aws_key, aws_secret, aws_associate_tag):
+        """Initialize an Amazon API Proxy.
+
+        :param aws_key:
+            A string representing an AWS authentication key.
+        :param aws_secret:
+            A string representing an AWS authentication secret.
+        :param aws_associate_tag:
+            A string representing an AWS associate tag.
+        """
+        self.api = bottlenose.Amazon(aws_key, aws_secret, aws_associate_tag)
+
+    def get_by_asin(self, asin):
+        """Get an Amazon Product by ASIN.
+
+        :param asin:
+            A string representing an Amazon ASIN.
+        :return:
+            :class:`~.AmazonProduct`
+        """
+        response = self.api.ItemLookup(ItemId=asin, ResponseGroup="Large")
+        root = objectify.fromstring(response)
+        if root.Items.Request.IsValid == 'False':
+            code = root.Items.Request.Errors.Error.Code
+            msg = root.Items.Request.Errors.Error.Message
+            raise LookupException(
+                "Amazon Product Lookup Error: '{0}', '{1}'".format(code, msg))
+        if not hasattr(root.Items, 'Item'):
+            raise AsinNotFound("ASIN not found: '{0}'".format(
+                etree.tostring(root, pretty_print=True)))
+        return AmazonProduct(root.Items.Item)
+
+    def search(self, **kwargs):
+        """Search.
+
+        :return:
+            An :class:`~.AmazonSearch` iterable.
+        """
+        return AmazonSearch(self.api, **kwargs)
+
+
 class AmazonProduct(object):
     """A Class encapsulating the Amazon Catalog.
     """
@@ -50,37 +87,13 @@ class AmazonProduct(object):
         """
         self.item = item
 
-    @classmethod
-    def search(cls, **kwargs):
-        """Search.
+    def to_string(self):
+        """Convert Item XML to string.
 
         :return:
-            An :class:`~.AmazonSearch` iterable.
+            A string representation of the Item xml.
         """
-        return AmazonSearch(**kwargs)
-
-    @classmethod
-    def get_by_asin(cls, asin):
-        """Get an AmazonProduct by ASIN.
-
-        Factory method.
-
-        :param asin:
-            Amazon ASIN - string.
-        :return:
-            :class:`~.AmazonProduct`
-        """
-        response = API.ItemLookup(ItemId=asin, ResponseGroup="Large")
-        root = objectify.fromstring(response)
-        if root.Items.Request.IsValid == 'False':
-            code = root.Items.Request.Errors.Error.Code
-            msg = root.Items.Request.Errors.Error.Message
-            raise LookupException(
-                "Amazon Product Lookup Error: '{0}', '{1}'".format(code, msg))
-        if not hasattr(root.Items, 'Item'):
-            raise AsinNotFound("ASIN not found: '{0}'".format(
-                etree.tostring(root, pretty_print=True)))
-        return cls(root.Items.Item)
+        return etree.tostring(self.item, pretty_print=True)
 
     def _safe_get_element(self, path, root=None):
         """Safe Get Element.
@@ -395,15 +408,14 @@ class AmazonSearch(object):
 
     A class providing an iterable over amazon search results.
     """
-    LIMIT = 10
-
-    def __init__(self, **kwargs):
+    def __init__(self, api, **kwargs):
         """Initialise
 
         Initialise a search
         """
         self.kwargs = kwargs
         self.current_page = 1
+        self.api = api
 
     def __iter__(self):
         """Iterate.
@@ -442,7 +454,7 @@ class AmazonSearch(object):
         :return:
             An lxml root element.
         """
-        response = API.ItemSearch(ResponseGroup="Large", **kwargs)
+        response = self.api.ItemSearch(ResponseGroup="Large", **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
             code = root.Items.Request.Errors.Error.Code
