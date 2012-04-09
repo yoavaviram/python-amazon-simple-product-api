@@ -3,7 +3,7 @@ import sys, os
 
 version = '1.0.0'
 
-setup(name='amazon-simple-product-api',
+setup(name='python-amazon-simple-product-api',
       version=version,
       description="A simple Python wrapper for the Amazon.com Product Advertising API",
       # http://pypi.python.org/pypi?:action=list_classifiers
