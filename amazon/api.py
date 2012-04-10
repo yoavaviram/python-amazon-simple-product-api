@@ -1,6 +1,8 @@
 import bottlenose
 from lxml import objectify, etree
-from django.conf import settings
+
+
+AMAZON_ASSOCIATES_BASE_URL = 'http://www.amazon.com/dp/'
 
 
 class AmazonException(Exception):
@@ -45,6 +47,7 @@ class AmazonAPI(object):
             A string representing an AWS associate tag.
         """
         self.api = bottlenose.Amazon(aws_key, aws_secret, aws_associate_tag)
+        self.aws_associate_tag = aws_associate_tag
 
     def get_by_asin(self, asin):
         """Get an Amazon Product by ASIN.
@@ -64,7 +67,7 @@ class AmazonAPI(object):
         if not hasattr(root.Items, 'Item'):
             raise AsinNotFound("ASIN not found: '{0}'".format(
                 etree.tostring(root, pretty_print=True)))
-        return AmazonProduct(root.Items.Item)
+        return AmazonProduct(root.Items.Item, self.aws_associate_tag)
 
     def search(self, **kwargs):
         """Search.
@@ -72,20 +75,21 @@ class AmazonAPI(object):
         :return:
             An :class:`~.AmazonSearch` iterable.
         """
-        return AmazonSearch(self.api, **kwargs)
+        return AmazonSearch(self.api, self.aws_associate_tag, **kwargs)
 
 
 class AmazonProduct(object):
     """A Class encapsulating the Amazon Catalog.
     """
 
-    def __init__(self, item, *args):
+    def __init__(self, item, aws_associate_tag, *args):
         """Initialize an Amazon Product Proxy.
 
         :param item:
             Lxml Item element.
         """
         self.item = item
+        self.aws_associate_tag = aws_associate_tag
 
     def to_string(self):
         """Convert Item XML to string.
@@ -188,9 +192,9 @@ class AmazonProduct(object):
             Offer URL (string).
         """
         return "{0}{1}/?tag={2}".format(
-            settings.AMAZON_ASSOCIATES_BASE_URL,
+            AMAZON_ASSOCIATES_BASE_URL,
             self.asin,
-            settings.AMAZON_ASSOCIATES_TAG)
+            self.aws_associate_tag)
 
     @property
     def brand(self):
@@ -409,7 +413,7 @@ class AmazonSearch(object):
 
     A class providing an iterable over amazon search results.
     """
-    def __init__(self, api, **kwargs):
+    def __init__(self, api, aws_associate_tag, **kwargs):
         """Initialise
 
         Initialise a search
@@ -417,6 +421,7 @@ class AmazonSearch(object):
         self.kwargs = kwargs
         self.current_page = 1
         self.api = api
+        self.aws_associate_tag = aws_associate_tag
 
     def __iter__(self):
         """Iterate.
@@ -429,7 +434,7 @@ class AmazonSearch(object):
         """
         for page in self.iterate_pages():
             for item in page.Items.Item:
-                yield AmazonProduct(item)
+                yield AmazonProduct(item, self.aws_associate_tag)
 
     def iterate_pages(self):
         """Iterate Pages.
