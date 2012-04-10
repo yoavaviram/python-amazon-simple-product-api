@@ -1,6 +1,6 @@
 Amazon Simple Product API 
 ==========================
-A simple Python wrapper for the Amazon.com Product Advertising API.
+A simple Python wrapper for the Amazon.com Product Advertising API. 
 
 
 Features
@@ -8,6 +8,7 @@ Features
 
 * An object oriented interface to Amazon products
 * Supports both item search and item lookup
+* Compatible with Google App Engine
 
 
 Prerequisites
