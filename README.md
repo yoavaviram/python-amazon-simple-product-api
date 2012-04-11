@@ -11,7 +11,7 @@ Features
 * Compatible with Google App Engine
 
 
-Prerequisites
+Dependencies
 --------------
 Before you get started, make sure you have:
 
@@ -66,6 +66,13 @@ Keep in mind that Amazon limits the number of pages it makes available.
 For more information about these calls, please consult the [Product Advertising
 API Developer Guide](http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/index.html).
 
+Tests
+------
+To run the test suite please follow these steps:
+
+* Make sure [Nose](http://readthedocs.org/docs/nose/en/latest/) (pip install nose) is installed.
+* Create a local file named: 'test_settings.py' with the following variables set to the relevant values: AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG.
+* Run 'nosetests'.
 
 License
 -------
