@@ -433,7 +433,7 @@ class AmazonSearch(object):
             Yields a :class:`~.AmazonProduct` for each result item.
         """
         for page in self.iterate_pages():
-            for item in page.Items.Item:
+            for item in getattr(page.Items, 'Item', []):
                 yield AmazonProduct(item, self.aws_associate_tag)
 
     def iterate_pages(self):
