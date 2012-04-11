@@ -3,7 +3,9 @@ from unittest import TestCase
 from nose.tools import assert_equals, assert_true
 
 from amazon.api import AmazonAPI
-from test_settings import AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG
+from test_settings import (AMAZON_ACCESS_KEY,
+                           AMAZON_SECRET_KEY,
+                           AMAZON_ASSOC_TAG)
 
 
 class TestAmazonApi(TestCase):
@@ -57,4 +59,3 @@ class TestAmazonApi(TestCase):
             break
         else:
             assert_true(False, 'No search results returned.')
-
