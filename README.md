@@ -70,9 +70,9 @@ Tests
 ------
 To run the test suite please follow these steps:
 
-* Make sure [Nose](http://readthedocs.org/docs/nose/en/latest/) is installed: (`pip install nose`).
-* Create a local file named: `test_settings.py` with the following variables set to the relevant values: `AMAZON_ACCESS_KEY`, `AMAZON_SECRET_KEY`, `AMAZON_ASSOC_TAG`.
-* Run `nosetests`.
+* Make sure [Nose](http://readthedocs.org/docs/nose/en/latest/) is installed: (`pip install nose`)
+* Create a local file named: `test_settings.py` with the following variables set to the relevant values: `AMAZON_ACCESS_KEY`, `AMAZON_SECRET_KEY`, `AMAZON_ASSOC_TAG`
+* Run `nosetests`
 
 License
 -------
