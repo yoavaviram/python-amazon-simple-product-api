@@ -3,7 +3,7 @@ this command from the command prompt:
 
     python setup.py install
 
-You will also need to install Bottlenose ether by cloning/downloading the repositoryi from:
+You will also need to install Bottlenose ether by cloning/downloading the repository from:
 
     https://github.com/dlo/bottlenose
 

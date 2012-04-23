@@ -29,7 +29,7 @@ class SearchException(AmazonException):
     pass
 
 
-class NoMorePages(AmazonException):
+class NoMorePages(SearchException):
     """No More Pages Exception.
     """
     pass
@@ -49,15 +49,13 @@ class AmazonAPI(object):
         self.api = bottlenose.Amazon(aws_key, aws_secret, aws_associate_tag)
         self.aws_associate_tag = aws_associate_tag
 
-    def get_by_asin(self, asin):
-        """Get an Amazon Product by ASIN.
+    def lookup(self, **kwargs):
+        """Lookup an Amazon Product.
 
-        :param asin:
-            A string representing an Amazon ASIN.
         :return:
             :class:`~.AmazonProduct`
         """
-        response = self.api.ItemLookup(ItemId=asin, ResponseGroup="Large")
+        response = self.api.ItemLookup(ResponseGroup="Large", **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
             code = root.Items.Request.Errors.Error.Code
@@ -78,8 +76,78 @@ class AmazonAPI(object):
         return AmazonSearch(self.api, self.aws_associate_tag, **kwargs)
 
 
+class AmazonSearch(object):
+    """ Amazon Search.
+
+    A class providing an iterable over amazon search results.
+    """
+    def __init__(self, api, aws_associate_tag, **kwargs):
+        """Initialise
+
+        Initialise a search
+
+        :param api:
+            An instance of :class:`~.bottlenose.Amazon`.
+        :param aws_associate_tag:
+            An string representing an Amazon Associates tag.
+        """
+        self.kwargs = kwargs
+        self.current_page = 1
+        self.api = api
+        self.aws_associate_tag = aws_associate_tag
+
+    def __iter__(self):
+        """Iterate.
+
+        A generator which iterate over all paginated results
+        returning :class:`~.AmazonProduct` for each item.
+
+        :return:
+            Yields a :class:`~.AmazonProduct` for each result item.
+        """
+        for page in self.iterate_pages():
+            for item in getattr(page.Items, 'Item', []):
+                yield AmazonProduct(item, self.aws_associate_tag)
+
+    def iterate_pages(self):
+        """Iterate Pages.
+
+        A generator which iterates over all pages.
+        Keep in mind that Amazon limits the number of pages it makes available.
+
+        :return:
+            Yields lxml root elements.
+        """
+        try:
+            while True:
+                yield self._query(ItemPage=self.current_page, **self.kwargs)
+                self.current_page += 1
+        except NoMorePages:
+            pass
+
+    def _query(self, **kwargs):
+        """Query.
+
+        Query Amazon search and check for errors.
+
+        :return:
+            An lxml root element.
+        """
+        response = self.api.ItemSearch(ResponseGroup="Large", **kwargs)
+        root = objectify.fromstring(response)
+        if root.Items.Request.IsValid == 'False':
+            code = root.Items.Request.Errors.Error.Code
+            msg = root.Items.Request.Errors.Error.Message
+            if code == 'AWS.ParameterOutOfRange':
+                raise NoMorePages(msg)
+            else:
+                raise SearchException(
+                    "Amazon Search Error: '{0}', '{1}'".format(code, msg))
+        return root
+
+
 class AmazonProduct(object):
-    """A Class encapsulating the Amazon Catalog.
+    """A wrapper class for an Amazon product.
     """
 
     def __init__(self, item, aws_associate_tag, *args):
@@ -107,7 +175,7 @@ class AmazonProduct(object):
 
         :param root:
             Lxml element.
-        :param path"
+        :param path:
             String path (i.e. 'Items.Item.Offers.Offer').
         :return:
             Element or None.
@@ -126,7 +194,7 @@ class AmazonProduct(object):
         Get element as string or None,
         :param root:
             Lxml element.
-        :param path"
+        :param path:
             String path (i.e. 'Items.Item.Offers.Offer').
         :return:
             String or None.
@@ -139,7 +207,7 @@ class AmazonProduct(object):
 
     @property
     def price_and_currency(self):
-        """Get Offer Price.
+        """Get Offer Price and Currency.
 
         Return price according to the following process:
 
@@ -406,68 +474,3 @@ class AmazonProduct(object):
             if value is not None:
                 properties[name] = value
         return properties
-
-
-class AmazonSearch(object):
-    """ Amazon Search.
-
-    A class providing an iterable over amazon search results.
-    """
-    def __init__(self, api, aws_associate_tag, **kwargs):
-        """Initialise
-
-        Initialise a search
-        """
-        self.kwargs = kwargs
-        self.current_page = 1
-        self.api = api
-        self.aws_associate_tag = aws_associate_tag
-
-    def __iter__(self):
-        """Iterate.
-
-        A generator which iterate over all paginated results
-        returning :class:`~.AmazonProduct` for each item.
-
-        :return:
-            Yields a :class:`~.AmazonProduct` for each result item.
-        """
-        for page in self.iterate_pages():
-            for item in getattr(page.Items, 'Item', []):
-                yield AmazonProduct(item, self.aws_associate_tag)
-
-    def iterate_pages(self):
-        """Iterate Pages.
-
-        A generator which iterates over all pages.
-        Keep in mind that Amazon limits the number of pages it makes available.
-
-        :return:
-            Yields lxml root elements.
-        """
-        try:
-            while True:
-                yield self._query(ItemPage=self.current_page, **self.kwargs)
-                self.current_page += 1
-        except NoMorePages:
-            pass
-
-    def _query(self, **kwargs):
-        """Query.
-
-        Query Amazon search and check for errors.
-
-        :return:
-            An lxml root element.
-        """
-        response = self.api.ItemSearch(ResponseGroup="Large", **kwargs)
-        root = objectify.fromstring(response)
-        if root.Items.Request.IsValid == 'False':
-            code = root.Items.Request.Errors.Error.Code
-            msg = root.Items.Request.Errors.Error.Message
-            if code == 'AWS.ParameterOutOfRange':
-                raise NoMorePages(msg)
-            else:
-                raise SearchException(
-                    "Amazon Search Error: '{0}', '{1}'".format(code, msg))
-        return root

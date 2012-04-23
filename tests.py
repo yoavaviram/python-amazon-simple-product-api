@@ -33,7 +33,7 @@ class TestAmazonApi(TestCase):
         Tests that a product lookup for a kindle returns results and that the
         main methods are working.
         """
-        product = self.amazon.get_by_asin("B0051QVF7A")
+        product = self.amazon.lookup(ItemId="B0051QVF7A")
         assert_equals(product.title,
             'Kindle, Wi-Fi, 6" E Ink Display - for international shipment')
         assert_equals(product.price_and_currency, (109.0, 'USD'))

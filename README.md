@@ -27,7 +27,7 @@ Lookup:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
-     >>> product = amazon.get_by_asin("B0051QVF7A")
+     >>> product = amazon.lookup(ItemId="B0051QVF7A")
      >>> product.title
      'Kindle, Wi-Fi, 6" E Ink Display - for international shipment'
      >>> product.price_and_currency
