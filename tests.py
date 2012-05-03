@@ -59,3 +59,13 @@ class TestAmazonApi(TestCase):
             break
         else:
             assert_true(False, 'No search results returned.')
+
+    def test_search_n(self):
+        """Test Product Search N.
+
+        Tests that a product search n is working by testing that N results are
+        returned.
+        """
+        products = self.amazon.search_n(1, Keywords='kindle',
+            SearchIndex='All')
+        assert_equals(len(products), 1)

@@ -1,3 +1,5 @@
+from itertools import islice
+
 import bottlenose
 from lxml import objectify, etree
 
@@ -74,6 +76,17 @@ class AmazonAPI(object):
             An :class:`~.AmazonSearch` iterable.
         """
         return AmazonSearch(self.api, self.aws_associate_tag, **kwargs)
+
+    def search_n(self, n, **kwargs):
+        """Search and return first N results..
+
+        :param n:
+            An integer specifying the number of results to return.
+        :return:
+            A list of :class:`~.AmazonProduct`.
+        """
+        items = AmazonSearch(self.api, self.aws_associate_tag, **kwargs)
+        return list(islice(items, n))
 
 
 class AmazonSearch(object):
