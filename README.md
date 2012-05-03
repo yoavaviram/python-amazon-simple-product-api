@@ -66,7 +66,7 @@ Keep in mind that Amazon limits the number of pages it makes available.
 For more information about these calls, please consult the [Product Advertising
 API Developer Guide](http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/index.html).
 
-There is also a conviniance method to search and return a list of the first N results:
+There is also a convenience method to search and return a list of the first N results:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
