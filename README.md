@@ -1,7 +1,7 @@
 Amazon Simple Product API 
 ==========================
-A simple Python wrapper for the Amazon.com Product Advertising API. 
 [![Build Status](https://secure.travis-ci.org/yoavaviram/python-amazon-simple-product-api.png?branch=master)](http://travis-ci.org/yoavaviram/python-amazon-simple-product-api)
+A simple Python wrapper for the Amazon.com Product Advertising API. 
 
 
 Features
@@ -17,6 +17,7 @@ Dependencies
 Before you get started, make sure you have:
 
 * Installed [Bottlenose](https://github.com/dlo/bottlenose) (`pip install bottlenose`)
+* Installed lxml (`pip install lxml`)
 * An Amazon Product Advertising account
 * An AWS account
 
