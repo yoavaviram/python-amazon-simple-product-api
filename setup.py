@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
-from os.path import join, dirname
 
-version = '1.0.2'
+
+version = '1.0.9'
+
 
 setup(name='python-amazon-simple-product-api',
       version=version,
       description="A simple Python wrapper for the Amazon.com Product Advertising API",
-      long_description=open(join(dirname(__file__), 'README.md')).read(),
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
           "Development Status :: 5 - Production/Stable",

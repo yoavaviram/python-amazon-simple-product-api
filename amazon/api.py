@@ -442,10 +442,11 @@ class AmazonProduct(object):
         :return:
             Returns a list of 'ItemAttributes.Feature' elements (strings).
         """
-        features = []
-        for feature in self._safe_get_element('ItemAttributes.Feature'):
-            features.append(feature.text)
-        return features
+        result = []
+        features = self._safe_get_element('ItemAttributes.Feature') or []
+        for feature in features:
+            result.append(feature.text)
+        return result
 
     @property
     def list_price(self):
