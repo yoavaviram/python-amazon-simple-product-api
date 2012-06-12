@@ -43,7 +43,9 @@ Lookup:
      >>> product.get_attributes(['ItemDimensions.Width', 'ItemDimensions.Height'])
      {'ItemDimensions.Width': '450', 'ItemDimensions.Height': '34'}
 
-The API wrapper supports many other product attributes as well. It is also possible to do batch lookup requests:
+(the API wrapper also supports many other product attributes)
+
+It is also possible to do batch lookup requests:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
