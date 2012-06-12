@@ -55,7 +55,8 @@ class AmazonAPI(object):
         """Lookup an Amazon Product.
 
         :return:
-            :class:`~.AmazonProduct`
+            :class:`~.AmazonProduct` if one item was returned, or a list of 
+            :class:`~.AmazonProduct` if multiple items returned.
         """
         response = self.api.ItemLookup(ResponseGroup="Large", **kwargs)
         root = objectify.fromstring(response)
@@ -65,9 +66,14 @@ class AmazonAPI(object):
             raise LookupException(
                 "Amazon Product Lookup Error: '{0}', '{1}'".format(code, msg))
         if not hasattr(root.Items, 'Item'):
-            raise AsinNotFound("ASIN not found: '{0}'".format(
+            raise AsinNotFound("ASIN(s) not found: '{0}'".format(
                 etree.tostring(root, pretty_print=True)))
-        return AmazonProduct(root.Items.Item, self.aws_associate_tag)
+        if len(root.Items.Item) > 1:
+            return [AmazonProduct(item, 
+                self.aws_associate_tag) for item in root.Items.Item]
+        else:
+            return AmazonProduct(root.Items.Item, self.aws_associate_tag)
+
 
     def search(self, **kwargs):
         """Search.

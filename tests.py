@@ -46,6 +46,18 @@ class TestAmazonApi(TestCase):
             ['ItemDimensions.Width', 'ItemDimensions.Height']),
             {'ItemDimensions.Width': '450', 'ItemDimensions.Height': '34'})
 
+    def test_batch_lookup(self):
+        """Test Batch Product Lookup.
+
+        Tests that a batch product lookup request returns multiple results.
+        """
+        asins = ['B0051QVESA', 'B005DOK8NW', 'B005890G8Y', 
+                 'B0051VVOB2', 'B005890G8O']
+        products = self.amazon.lookup(ItemId=','.join(asins))
+        assert_equals(len(products), 5)
+        for i, product in enumerate(products):
+            assert_equals(asins[i], product.asin)
+
     def test_search(self):
         """Test Product Search.
 
