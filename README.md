@@ -45,7 +45,7 @@ Lookup:
 
 (the API wrapper also supports many other product attributes)
 
-It is also possible to do batch lookup requests:
+Batch lookup requests are also supported:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
