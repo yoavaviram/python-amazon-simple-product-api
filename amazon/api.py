@@ -55,8 +55,9 @@ class AmazonAPI(object):
         """Lookup an Amazon Product.
 
         :return:
-            An instance of :class:`~.AmazonProduct` if one item was returned, or a list of 
-            :class:`~.AmazonProduct` instances if multiple items where returned.
+            An instance of :class:`~.AmazonProduct` if one item was returned,
+            or a list of  :class:`~.AmazonProduct` instances if multiple
+            items where returned.
         """
         response = self.api.ItemLookup(ResponseGroup="Large", **kwargs)
         root = objectify.fromstring(response)
@@ -69,11 +70,10 @@ class AmazonAPI(object):
             raise AsinNotFound("ASIN(s) not found: '{0}'".format(
                 etree.tostring(root, pretty_print=True)))
         if len(root.Items.Item) > 1:
-            return [AmazonProduct(item, 
+            return [AmazonProduct(item,
                 self.aws_associate_tag) for item in root.Items.Item]
         else:
             return AmazonProduct(root.Items.Item, self.aws_associate_tag)
-
 
     def search(self, **kwargs):
         """Search.
