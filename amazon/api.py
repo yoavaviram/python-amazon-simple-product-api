@@ -55,8 +55,8 @@ class AmazonAPI(object):
         """Lookup an Amazon Product.
 
         :return:
-            :class:`~.AmazonProduct` if one item was returned, or a list of 
-            :class:`~.AmazonProduct` if multiple items returned.
+            An instance of :class:`~.AmazonProduct` if one item was returned, or a list of 
+            :class:`~.AmazonProduct` instances if multiple items where returned.
         """
         response = self.api.ItemLookup(ResponseGroup="Large", **kwargs)
         root = objectify.fromstring(response)
