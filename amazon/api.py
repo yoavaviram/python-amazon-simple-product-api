@@ -1,3 +1,18 @@
+#!/usr/bin/python
+#
+# Copyright (C) 2012 Yoav Aviram.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 from itertools import islice
 
 import bottlenose
@@ -59,7 +74,7 @@ class AmazonAPI(object):
             or a list of  :class:`~.AmazonProduct` instances if multiple
             items where returned.
         """
-        response = self.api.ItemLookup(ResponseGroup="Large", **kwargs)
+        response = self.api.ItemLookup(ResponseGroup="Large, Variations", **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
             code = root.Items.Request.Errors.Error.Code
@@ -71,9 +86,10 @@ class AmazonAPI(object):
                 etree.tostring(root, pretty_print=True)))
         if len(root.Items.Item) > 1:
             return [AmazonProduct(item,
-                self.aws_associate_tag) for item in root.Items.Item]
+                self.aws_associate_tag, self) for item in root.Items.Item]
         else:
-            return AmazonProduct(root.Items.Item, self.aws_associate_tag)
+            return AmazonProduct(
+                root.Items.Item, self.aws_associate_tag, self)
 
     def search(self, **kwargs):
         """Search.
@@ -126,7 +142,7 @@ class AmazonSearch(object):
         """
         for page in self.iterate_pages():
             for item in getattr(page.Items, 'Item', []):
-                yield AmazonProduct(item, self.aws_associate_tag)
+                yield AmazonProduct(item, self.aws_associate_tag, self.api)
 
     def iterate_pages(self):
         """Iterate Pages.
@@ -169,7 +185,7 @@ class AmazonProduct(object):
     """A wrapper class for an Amazon product.
     """
 
-    def __init__(self, item, aws_associate_tag, *args):
+    def __init__(self, item, aws_associate_tag, api, *args):
         """Initialize an Amazon Product Proxy.
 
         :param item:
@@ -177,6 +193,8 @@ class AmazonProduct(object):
         """
         self.item = item
         self.aws_associate_tag = aws_associate_tag
+        self.api = api
+        self.parent = None
 
     def to_string(self):
         """Convert Item XML to string.
@@ -494,3 +512,28 @@ class AmazonProduct(object):
             if value is not None:
                 properties[name] = value
         return properties
+
+    @property
+    def parent_asin(self):
+        """Parent ASIN.
+
+        Can be used to test if product has a parent.
+        :return:
+            Parent ASIN if product has a parent.
+        """
+        return self._safe_get_element('ParentASIN')
+
+    def get_parent(self):
+        """Get Parent.
+
+        Fetch parent product if it exists.
+        Use `parent_asin` to check if a parent exist before fetching.
+        :return:
+            An instance of :class:`~.AmazonProduct` representing the
+            parent product.
+        """
+        if not self.parent:
+            parent = self._safe_get_element('ParentASIN')
+            if parent:
+                self.parent = self.api.lookup(ItemId=parent)
+        return self.parent
