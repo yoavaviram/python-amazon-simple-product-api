@@ -46,6 +46,7 @@ Lookup:
 (the API wrapper also supports many other product attributes)
 
 Lookup on amazon.de instead of amazon.com by setting the region:
+
      >>> from amazon.api import AmazonAPI
      >>> import bottlenose.api
      >>> region_options = bottlenose.api.SERVICE_DOMAINS.keys()
