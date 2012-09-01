@@ -45,6 +45,19 @@ Lookup:
 
 (the API wrapper also supports many other product attributes)
 
+Lookup on amazon.de instead of amazon.com by setting the region:
+     >>> from amazon.api import AmazonAPI
+     >>> import bottlenose.api
+     >>> region_options = bottlenose.api.SERVICE_DOMAINS.keys()
+     >>> region_options
+     ['US', 'FR', 'CN', 'UK', 'CA', 'DE', 'JP', 'IT', 'ES']
+     >>> amazon_de = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, region="DE")
+     >>> product = amazon_de.lookup(ItemId="B0051QVF7A")
+     >>> product.title
+     u'Kindle, WLAN, 15 cm (6 Zoll) E Ink Display, deutsches Men\xfc'
+     >>> product.price_and_currency
+     (99.0, 'EUR')
+
 Batch lookup requests are also supported:
 
      >>> from amazon.api import AmazonAPI
