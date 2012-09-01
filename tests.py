@@ -81,3 +81,27 @@ class TestAmazonApi(TestCase):
         products = self.amazon.search_n(1, Keywords='kindle',
             SearchIndex='All')
         assert_equals(len(products), 1)
+
+    def test_amazon_api_defaults_to_US(self):
+        """Test Amazon API defaults to the US store."""
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
+            AMAZON_ASSOC_TAG)
+        assert_equals(amazon.api.Region, "US")
+
+    def test_search_amazon_germany(self):
+        """Test Poduct Search on Amazon UK.
+        
+        Tests that a product search on Amazon UK is working and that the
+        currency of any of the returned products is GBP. The test fails if no
+        results were returned.
+        """
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
+            AMAZON_ASSOC_TAG, region="UK")
+        assert_equals(amazon.api.Region, "UK", "Region has not been set to UK")
+
+        products = amazon.search(Keywords='Kindle', SearchIndex='All')
+        currencies = [product.price_and_currency[1] for product in products]
+        assert_true(len(currencies), "No products found")
+
+        is_gbp = 'GBP' in currencies
+        assert_true(is_gbp, "Currency is not GBP, cannot be Amazon UK, though")
