@@ -53,7 +53,7 @@ class NoMorePages(SearchException):
 
 
 class AmazonAPI(object):
-    def __init__(self, aws_key, aws_secret, aws_associate_tag):
+    def __init__(self, aws_key, aws_secret, aws_associate_tag, region="US"):
         """Initialize an Amazon API Proxy.
 
         :param aws_key:
@@ -62,8 +62,13 @@ class AmazonAPI(object):
             A string representing an AWS authentication secret.
         :param aws_associate_tag:
             A string representing an AWS associate tag.
+        :param region:
+            A string representing the region, defaulting to "US" (amazon.com)
+            See keys of bottlenose.api.SERVICE_DOMAINS for options, which were
+            CA, CN, DE, ES, FR, IT, JP, UK, US at the time of writing.
         """
-        self.api = bottlenose.Amazon(aws_key, aws_secret, aws_associate_tag)
+        self.api = bottlenose.Amazon(aws_key, aws_secret, aws_associate_tag,
+            Region=region)
         self.aws_associate_tag = aws_associate_tag
 
     def lookup(self, **kwargs):
