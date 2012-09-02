@@ -88,7 +88,7 @@ class TestAmazonApi(TestCase):
             AMAZON_ASSOC_TAG)
         assert_equals(amazon.api.Region, "US")
 
-    def test_search_amazon_germany(self):
+    def test_search_amazon_uk(self):
         """Test Poduct Search on Amazon UK.
         
         Tests that a product search on Amazon UK is working and that the
