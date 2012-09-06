@@ -74,7 +74,7 @@ class AmazonAPI(object):
             or a list of  :class:`~.AmazonProduct` instances if multiple
             items where returned.
         """
-        response = self.api.ItemLookup(ResponseGroup="Large, Variations", **kwargs)
+        response = self.api.ItemLookup(ResponseGroup="Large", **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
             code = root.Items.Request.Errors.Error.Code
@@ -475,6 +475,12 @@ class AmazonProduct(object):
     @property
     def list_price(self):
         """List Price.
+
+        :return:
+            A tuple containing:
+
+                1. Float representation of price.
+                2. ISO Currency code (string).
         """
         price = self._safe_get_element_text('ItemAttributes.ListPrice.Amount')
         currency = self._safe_get_element_text(
@@ -495,6 +501,18 @@ class AmazonProduct(object):
             Attribute value (string) or None if not found.
         """
         return self._safe_get_element_text("ItemAttributes.{0}".format(name))
+
+    def get_attribute_details(self, name):
+        """Get Attribute Details
+
+        Gets XML attributes of the product attribute. These usually contain
+        details about the product attributes such as units.
+        :param name:
+            Attribute name (string)
+        :return:
+            A name/value dictionary.
+        """
+        return self._safe_get_element("ItemAttributes.{0}".format(name)).attrib
 
     def get_attributes(self, name_list):
         """Get Attributes
