@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-version = '1.1.1'
+version = '1.1.2'
 
 
 setup(name='python-amazon-simple-product-api',
