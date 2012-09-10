@@ -29,11 +29,11 @@ Lookup:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
-     >>> product = amazon.lookup(ItemId="B0051QVF7A")
+     >>> product = amazon.lookup(ItemId='B0051QVF7A')
      >>> product.title
      'Kindle, Wi-Fi, 6" E Ink Display - for international shipment'
      >>> product.price_and_currency
-     (109.0, 'USD')
+     (89.0, 'USD')
      >>> product.ean
      '0814916014354'
      >>> product.large_image_url
@@ -53,7 +53,7 @@ Lookup on amazon.de instead of amazon.com by setting the region:
      >>> region_options
      ['US', 'FR', 'CN', 'UK', 'CA', 'DE', 'JP', 'IT', 'ES']
      >>> amazon_de = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, region="DE")
-     >>> product = amazon_de.lookup(ItemId="B0051QVF7A")
+     >>> product = amazon_de.lookup(ItemId='B0051QVF7A')
      >>> product.title
      u'Kindle, WLAN, 15 cm (6 Zoll) E Ink Display, deutsches Men\xfc'
      >>> product.price_and_currency
@@ -63,7 +63,7 @@ Batch lookup requests are also supported:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
-     >>> products = amazon.lookup(ItemId="B0051QVESA,B005DOK8NW,B005890G8Y,B0051VVOB2,B005890G8O")
+     >>> products = amazon.lookup(ItemId='B0051QVESA,B005DOK8NW,B005890G8Y,B0051VVOB2,B005890G8O')
      >>> len(products)
      5
      >>> products[0].asin
@@ -102,6 +102,13 @@ There is also a convenience method to search and return a list of the first N re
      >>> products[0].title
      'Kindle, Wi-Fi, 6" E Ink Display - includes Special Offers & Sponsored Screensavers'
 
+Similarity Lookup:
+
+     >>> from amazon.api import AmazonAPI
+     >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
+     >>> products = amazon.similarity_lookup(ItemId='B0051QVESA,B005DOK8NW')
+     >>> len(products)
+     4
 
 Tests
 ------

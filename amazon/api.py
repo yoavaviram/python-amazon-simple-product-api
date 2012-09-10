@@ -52,6 +52,12 @@ class NoMorePages(SearchException):
     pass
 
 
+class SimilartyLookupException(AmazonException):
+    """Similarty Lookup Exception.
+    """
+    pass
+
+
 class AmazonAPI(object):
     def __init__(self, aws_key, aws_secret, aws_associate_tag, region="US"):
         """Initialize an Amazon API Proxy.
@@ -95,6 +101,26 @@ class AmazonAPI(object):
         else:
             return AmazonProduct(
                 root.Items.Item, self.aws_associate_tag, self)
+
+    def similarity_lookup(self, **kwargs):
+        """Similarty Lookup.
+
+        Returns up to ten products that are similar to all items
+        specified in the request.
+
+        Example:
+            >>> api.similarity_lookup(ItemId='B002L3XLBO,B000LQTBKI')
+        """
+        response = self.api.SimilarityLookup(ResponseGroup="Large", **kwargs)
+        root = objectify.fromstring(response)
+        if root.Items.Request.IsValid == 'False':
+            code = root.Items.Request.Errors.Error.Code
+            msg = root.Items.Request.Errors.Error.Message
+            raise SimilartyLookupException(
+                "Amazon Similarty Lookup Error: '{0}', '{1}'".format(
+                    code, msg))
+        return [AmazonProduct(item, self.aws_associate_tag, self.api)
+            for item in getattr(root.Items, 'Item', [])]
 
     def search(self, **kwargs):
         """Search.

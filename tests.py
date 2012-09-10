@@ -36,7 +36,6 @@ class TestAmazonApi(TestCase):
         product = self.amazon.lookup(ItemId="B0051QVF7A")
         assert_equals(product.title,
             'Kindle, Wi-Fi, 6" E Ink Display - for international shipment')
-        assert_equals(product.price_and_currency, (109.0, 'USD'))
         assert_equals(product.ean, '0814916014354')
         assert_equals(product.large_image_url,
             'http://ecx.images-amazon.com/images/I/411H%2B731ZzL.jpg')
@@ -90,7 +89,7 @@ class TestAmazonApi(TestCase):
 
     def test_search_amazon_uk(self):
         """Test Poduct Search on Amazon UK.
-        
+
         Tests that a product search on Amazon UK is working and that the
         currency of any of the returned products is GBP. The test fails if no
         results were returned.
@@ -105,3 +104,11 @@ class TestAmazonApi(TestCase):
 
         is_gbp = 'GBP' in currencies
         assert_true(is_gbp, "Currency is not GBP, cannot be Amazon UK, though")
+
+    def test_similarity_lookup(self):
+        """Test Similarity Lookup.
+
+        Tests that a similarity lookup for a kindle returns 10 results.
+        """
+        products = self.amazon.similarity_lookup(ItemId="B0051QVF7A")
+        assert_equals(len(products), 10)
