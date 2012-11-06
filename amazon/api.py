@@ -77,7 +77,7 @@ class AmazonAPI(object):
             Region=region)
         self.aws_associate_tag = aws_associate_tag
 
-    def lookup(self, **kwargs):
+    def lookup(self, ResponseGroup="Large", **kwargs):
         """Lookup an Amazon Product.
 
         :return:
@@ -85,7 +85,7 @@ class AmazonAPI(object):
             or a list of  :class:`~.AmazonProduct` instances if multiple
             items where returned.
         """
-        response = self.api.ItemLookup(ResponseGroup="Large", **kwargs)
+        response = self.api.ItemLookup(ResponseGroup=ResponseGroup, **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
             code = root.Items.Request.Errors.Error.Code
@@ -102,7 +102,7 @@ class AmazonAPI(object):
             return AmazonProduct(
                 root.Items.Item, self.aws_associate_tag, self)
 
-    def similarity_lookup(self, **kwargs):
+    def similarity_lookup(self, ResponseGroup="Large", **kwargs):
         """Similarty Lookup.
 
         Returns up to ten products that are similar to all items
@@ -111,7 +111,7 @@ class AmazonAPI(object):
         Example:
             >>> api.similarity_lookup(ItemId='B002L3XLBO,B000LQTBKI')
         """
-        response = self.api.SimilarityLookup(ResponseGroup="Large", **kwargs)
+        response = self.api.SimilarityLookup(ResponseGroup=ResponseGroup, **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
             code = root.Items.Request.Errors.Error.Code
@@ -191,7 +191,7 @@ class AmazonSearch(object):
         except NoMorePages:
             pass
 
-    def _query(self, **kwargs):
+    def _query(self, ResponseGroup="Large", **kwargs):
         """Query.
 
         Query Amazon search and check for errors.
@@ -199,7 +199,7 @@ class AmazonSearch(object):
         :return:
             An lxml root element.
         """
-        response = self.api.ItemSearch(ResponseGroup="Large", **kwargs)
+        response = self.api.ItemSearch(ResponseGroup=ResponseGroup, **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
             code = root.Items.Request.Errors.Error.Code
