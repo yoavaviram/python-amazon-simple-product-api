@@ -19,7 +19,7 @@ import bottlenose
 from lxml import objectify, etree
 
 
-AMAZON_ASSOCIATES_BASE_URL = 'http://www.amazon.com/dp/'
+AMAZON_ASSOCIATES_BASE_URL = 'http://www.amazon.{region}/dp/'
 
 
 class AmazonException(Exception):
@@ -76,6 +76,7 @@ class AmazonAPI(object):
         self.api = bottlenose.Amazon(aws_key, aws_secret, aws_associate_tag,
             Region=region)
         self.aws_associate_tag = aws_associate_tag
+        self.region = region
 
     def lookup(self, ResponseGroup="Large", **kwargs):
         """Lookup an Amazon Product.
@@ -97,10 +98,10 @@ class AmazonAPI(object):
                 etree.tostring(root, pretty_print=True)))
         if len(root.Items.Item) > 1:
             return [AmazonProduct(item,
-                self.aws_associate_tag, self) for item in root.Items.Item]
+                self.aws_associate_tag, self, region=self.region) for item in root.Items.Item]
         else:
             return AmazonProduct(
-                root.Items.Item, self.aws_associate_tag, self)
+                root.Items.Item, self.aws_associate_tag, self, region=self.region)
 
     def similarity_lookup(self, ResponseGroup="Large", **kwargs):
         """Similarty Lookup.
@@ -119,7 +120,7 @@ class AmazonAPI(object):
             raise SimilartyLookupException(
                 "Amazon Similarty Lookup Error: '{0}', '{1}'".format(
                     code, msg))
-        return [AmazonProduct(item, self.aws_associate_tag, self.api)
+        return [AmazonProduct(item, self.aws_associate_tag, self.api, region=self.region)
             for item in getattr(root.Items, 'Item', [])]
 
     def search(self, **kwargs):
@@ -216,7 +217,7 @@ class AmazonProduct(object):
     """A wrapper class for an Amazon product.
     """
 
-    def __init__(self, item, aws_associate_tag, api, *args):
+    def __init__(self, item, aws_associate_tag, api, *args, **kwargs):
         """Initialize an Amazon Product Proxy.
 
         :param item:
@@ -226,7 +227,11 @@ class AmazonProduct(object):
         self.aws_associate_tag = aws_associate_tag
         self.api = api
         self.parent = None
-
+        if 'region' in kwargs:
+            self.region = kwargs['region'] if kwargs['region'] != "US" else "com"
+        else:
+            self.region = "com"
+            
     def to_string(self):
         """Convert Item XML to string.
 
@@ -328,7 +333,7 @@ class AmazonProduct(object):
             Offer URL (string).
         """
         return "{0}{1}/?tag={2}".format(
-            AMAZON_ASSOCIATES_BASE_URL,
+            AMAZON_ASSOCIATES_BASE_URL.format(region=self.region.lower()),
             self.asin,
             self.aws_associate_tag)
 
