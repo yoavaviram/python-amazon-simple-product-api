@@ -73,8 +73,8 @@ class AmazonAPI(object):
             See keys of bottlenose.api.SERVICE_DOMAINS for options, which were
             CA, CN, DE, ES, FR, IT, JP, UK, US at the time of writing.
         """
-        self.api = bottlenose.Amazon(aws_key, aws_secret, aws_associate_tag,
-            Region=region)
+        self.api = bottlenose.Amazon(
+            aws_key, aws_secret, aws_associate_tag, Region=region)
         self.aws_associate_tag = aws_associate_tag
         self.region = region
 
@@ -97,11 +97,20 @@ class AmazonAPI(object):
             raise AsinNotFound("ASIN(s) not found: '{0}'".format(
                 etree.tostring(root, pretty_print=True)))
         if len(root.Items.Item) > 1:
-            return [AmazonProduct(item,
-                self.aws_associate_tag, self, region=self.region) for item in root.Items.Item]
+            return [
+                AmazonProduct(
+                    item,
+                    self.aws_associate_tag,
+                    self,
+                    region=self.region) for item in root.Items.Item
+            ]
         else:
             return AmazonProduct(
-                root.Items.Item, self.aws_associate_tag, self, region=self.region)
+                root.Items.Item,
+                self.aws_associate_tag,
+                self,
+                region=self.region
+            )
 
     def similarity_lookup(self, ResponseGroup="Large", **kwargs):
         """Similarty Lookup.
@@ -112,7 +121,8 @@ class AmazonAPI(object):
         Example:
             >>> api.similarity_lookup(ItemId='B002L3XLBO,B000LQTBKI')
         """
-        response = self.api.SimilarityLookup(ResponseGroup=ResponseGroup, **kwargs)
+        response = self.api.SimilarityLookup(
+            ResponseGroup=ResponseGroup, **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
             code = root.Items.Request.Errors.Error.Code
@@ -120,8 +130,15 @@ class AmazonAPI(object):
             raise SimilartyLookupException(
                 "Amazon Similarty Lookup Error: '{0}', '{1}'".format(
                     code, msg))
-        return [AmazonProduct(item, self.aws_associate_tag, self.api, region=self.region)
-            for item in getattr(root.Items, 'Item', [])]
+        return [
+            AmazonProduct(
+                item,
+                self.aws_associate_tag,
+                self.api,
+                region=self.region
+            )
+            for item in getattr(root.Items, 'Item', [])
+        ]
 
     def search(self, **kwargs):
         """Search.
@@ -228,10 +245,13 @@ class AmazonProduct(object):
         self.api = api
         self.parent = None
         if 'region' in kwargs:
-            self.region = kwargs['region'] if kwargs['region'] != "US" else "com"
+            if kwargs['region'] != "US":
+                self.region = kwargs['region']
+            else:
+                self.region = "com"
         else:
             self.region = "com"
-            
+
     def to_string(self):
         """Convert Item XML to string.
 
@@ -418,8 +438,8 @@ class AmazonProduct(object):
         if ean is None:
             ean_list = self._safe_get_element_text('ItemAttributes.EANList')
             if ean_list:
-                ean = self._safe_get_element_text('EANListElement',
-                    root=ean_list[0])
+                ean = self._safe_get_element_text(
+                    'EANListElement', root=ean_list[0])
         return ean
 
     @property
@@ -433,8 +453,8 @@ class AmazonProduct(object):
         if upc is None:
             upc_list = self._safe_get_element_text('ItemAttributes.UPCList')
             if upc_list:
-                upc = self._safe_get_element_text('UPCListElement',
-                    root=upc_list[0])
+                upc = self._safe_get_element_text(
+                    'UPCListElement', root=upc_list[0])
         return upc
 
     @property

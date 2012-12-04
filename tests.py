@@ -24,8 +24,8 @@ class TestAmazonApi(TestCase):
 
         Are imported from a custom file named: 'test_settings.py'
         """
-        self.amazon = AmazonAPI(AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
+        self.amazon = AmazonAPI(
+            AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
 
     def test_lookup(self):
         """Test Product Lookup.
@@ -34,13 +34,19 @@ class TestAmazonApi(TestCase):
         main methods are working.
         """
         product = self.amazon.lookup(ItemId="B0051QVF7A")
-        assert_equals(product.title,
-            'Kindle, Wi-Fi, 6" E Ink Display - for international shipment')
+        assert_equals(
+            product.title,
+            'Kindle, Wi-Fi, 6" E Ink Display - for international shipment'
+        )
         assert_equals(product.ean, '0814916014354')
-        assert_equals(product.large_image_url,
-            'http://ecx.images-amazon.com/images/I/411H%2B731ZzL.jpg')
-        assert_equals(product.get_attribute('Publisher'),
-            'Amazon Digital Services, Inc')
+        assert_equals(
+            product.large_image_url,
+            'http://ecx.images-amazon.com/images/I/411H%2B731ZzL.jpg'
+        )
+        assert_equals(
+            product.get_attribute('Publisher'),
+            'Amazon Digital Services, Inc'
+        )
         assert_equals(product.get_attributes(
             ['ItemDimensions.Width', 'ItemDimensions.Height']),
             {'ItemDimensions.Width': '450', 'ItemDimensions.Height': '34'})
@@ -77,14 +83,20 @@ class TestAmazonApi(TestCase):
         Tests that a product search n is working by testing that N results are
         returned.
         """
-        products = self.amazon.search_n(1, Keywords='kindle',
-            SearchIndex='All')
+        products = self.amazon.search_n(
+            1,
+            Keywords='kindle',
+            SearchIndex='All'
+        )
         assert_equals(len(products), 1)
 
     def test_amazon_api_defaults_to_US(self):
         """Test Amazon API defaults to the US store."""
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG)
+        amazon = AmazonAPI(
+            AMAZON_ACCESS_KEY,
+            AMAZON_SECRET_KEY,
+            AMAZON_ASSOC_TAG
+        )
         assert_equals(amazon.api.Region, "US")
 
     def test_search_amazon_uk(self):
@@ -94,8 +106,12 @@ class TestAmazonApi(TestCase):
         currency of any of the returned products is GBP. The test fails if no
         results were returned.
         """
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG, region="UK")
+        amazon = AmazonAPI(
+            AMAZON_ACCESS_KEY,
+            AMAZON_SECRET_KEY,
+            AMAZON_ASSOC_TAG,
+            region="UK"
+        )
         assert_equals(amazon.api.Region, "UK", "Region has not been set to UK")
 
         products = amazon.search(Keywords='Kindle', SearchIndex='All')
