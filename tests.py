@@ -50,6 +50,9 @@ class TestAmazonApi(TestCase):
         assert_equals(product.get_attributes(
             ['ItemDimensions.Width', 'ItemDimensions.Height']),
             {'ItemDimensions.Width': '450', 'ItemDimensions.Height': '34'})
+        assert_true(len(product.browse_nodes) > 0)
+        assert_equals(product.browse_nodes[0].id, 2642129011)
+        assert_equals(product.browse_nodes[0].name, 'eBook Readers')
 
     def test_batch_lookup(self):
         """Test Batch Product Lookup.
