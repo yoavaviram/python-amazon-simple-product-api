@@ -274,7 +274,7 @@ class AmazonProduct(object):
             Element or None.
         """
         elements = path.split('.')
-        parent = root or self.item
+        parent = root if root is not None else self.item
         for element in elements[:-1]:
             parent = getattr(parent, element, None)
             if parent is None:
