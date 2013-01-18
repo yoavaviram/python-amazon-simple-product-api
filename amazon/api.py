@@ -230,6 +230,67 @@ class AmazonSearch(object):
         return root
 
 
+class AmazonBrowseNode(object):
+
+    def __init__(self, element):
+        self.element = element
+
+    @property
+    def id(self):
+        """Browse Node ID.
+
+        A positive integer that uniquely identifies a parent product category.
+
+        :return:
+            ID (integer)
+        """
+        if hasattr(self.element, 'BrowseNodeId'):
+            return int(self.element['BrowseNodeId'])
+        return None
+
+    @property
+    def name(self):
+        """Browse Node Name.
+
+        :return:
+            Name (string)
+        """
+        return getattr(self.element, 'Name', None)
+
+    @property
+    def is_category_root(self):
+        """Boolean value that specifies if the browse node is at the top of
+        the browse node tree.
+        """
+        return getattr(self.element, 'IsCategoryRoot', False)
+
+    @property
+    def ancestor(self):
+        """This browse node's immediate ancestor in the browse node tree.
+
+        :return:
+            The ancestor as an :class:`~.AmazonBrowseNode`, or None.
+        """
+        ancestors = getattr(self.element, 'Ancestors', None)
+        if hasattr(ancestors, 'BrowseNode'):
+            return AmazonBrowseNode(ancestors['BrowseNode'])
+        return None
+
+    @property
+    def ancestors(self):
+        """A list of this browse node's ancestors in the browse node tree.
+
+        :return:
+            List of :class:`~.AmazonBrowseNode` objects.
+        """
+        ancestors = []
+        node = self.ancestor
+        while node is not None:
+            ancestors.append(node)
+            node = node.ancestor
+        return ancestors
+
+
 class AmazonProduct(object):
     """A wrapper class for an Amazon product.
     """
@@ -611,3 +672,16 @@ class AmazonProduct(object):
             if parent:
                 self.parent = self.api.lookup(ItemId=parent)
         return self.parent
+
+    @property
+    def browse_nodes(self):
+        """Browse Nodes.
+
+        :return:
+            A list of :class:`~.AmazonBrowseNode` objects.
+        """
+        root = self._safe_get_element('BrowseNodes')
+        if root is None:
+            return []
+
+        return [AmazonBrowseNode(child) for child in root.iterchildren()]
