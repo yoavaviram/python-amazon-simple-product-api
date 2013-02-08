@@ -8,6 +8,17 @@ from test_settings import (AMAZON_ACCESS_KEY,
                            AMAZON_ASSOC_TAG)
 
 
+PRODUCT_ATTRIBUTES = [
+    'asin', 'author', 'binding', 'brand', 'browse_nodes', 'ean', 'edition',
+    'editorial_review', 'eisbn', 'features', 'get_parent', 'isbn', 'label',
+    'large_image_url', 'list_price', 'manufacturer', 'medium_image_url',
+    'model', 'mpn', 'offer_url', 'parent_asin', 'part_number',
+    'price_and_currency', 'publication_date', 'publisher', 'region',
+    'release_date', 'reviews', 'sku', 'small_image_url', 'tiny_image_url',
+    'title', 'upc'
+]
+
+
 class TestAmazonApi(TestCase):
     """Test Amazon API
 
@@ -131,3 +142,12 @@ class TestAmazonApi(TestCase):
         """
         products = self.amazon.similarity_lookup(ItemId="B0051QVF7A")
         assert_equals(len(products), 10)
+
+    def test_product_attributes(self):
+        """Test Product Attributes.
+
+        Tests that all product that are supposed to be accesible are.
+        """
+        product = self.amazon.lookup(ItemId="B0051QVF7A")
+        for attribute in PRODUCT_ATTRIBUTES:
+            getattr(product, attribute)
