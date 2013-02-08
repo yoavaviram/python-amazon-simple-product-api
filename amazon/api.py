@@ -13,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import datetime
 from itertools import islice
 
 import bottlenose
@@ -359,6 +360,26 @@ class AmazonProduct(object):
         else:
             return None
 
+    def _safe_get_element_date(self, path, root=None):
+        """Safe get elemnent date.
+
+        Get element as datetime.date or None,
+        :param root:
+            Lxml element.
+        :param path:
+            String path (i.e. 'Items.Item.Offers.Offer').
+        :return:
+            datetime.date or None.
+        """
+        value = self._safe_get_element_text(path=path, root=root)
+        if value is not None:
+            try:
+                value = datetime.datetime.strptime(value, '%Y-%m-%d').date()
+            except ValueError:
+                value = None
+
+        return value
+
     @property
     def price_and_currency(self):
         """Get Offer Price and Currency.
@@ -419,6 +440,42 @@ class AmazonProduct(object):
             self.aws_associate_tag)
 
     @property
+    def author(self):
+        """Author.
+
+        :return:
+            Author (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Author')
+
+    @property
+    def publisher(self):
+        """Publisher.
+
+        :return:
+            Publisher (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Publisher')
+
+    @property
+    def label(self):
+        """Label.
+
+        :return:
+            Label (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Label')
+
+    @property
+    def manufacturer(self):
+        """Manufacturer.
+
+        :return:
+            Manufacturer (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Manufacturer')
+
+    @property
     def brand(self):
         """Brand.
 
@@ -435,6 +492,51 @@ class AmazonProduct(object):
             ISBN (string)
         """
         return self._safe_get_element_text('ItemAttributes.ISBN')
+
+    @property
+    def eisbn(self):
+        """EISBN (The ISBN of eBooks).
+
+        :return:
+            EISBN (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.EISBN')
+
+    @property
+    def binding(self):
+        """Binding.
+
+        :return:
+            Binding (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Binding')
+
+    @property
+    def publication_date(self):
+        """Pubdate.
+
+        :return:
+            Pubdate (datetime.date)
+        """
+        return self._safe_get_element_date('ItemAttributes.PublicationDate')
+
+    @property
+    def release_date(self):
+        """Release date .
+
+        :return:
+            Release date (datetime.date)
+        """
+        return self._safe_get_element_date('ItemAttributes.PublicationDate')
+
+    @property
+    def edition(self):
+        """Edition.
+
+        :return:
+            Edition (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Edition')
 
     @property
     def large_image_url(self):
