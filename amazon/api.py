@@ -527,7 +527,7 @@ class AmazonProduct(object):
         :return:
             Release date (datetime.date)
         """
-        return self._safe_get_element_date('ItemAttributes.PublicationDate')
+        return self._safe_get_element_date('ItemAttributes.ReleaseDate')
 
     @property
     def edition(self):
