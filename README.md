@@ -89,6 +89,14 @@ The search method returns an iterable that will iterate through all products,
 on all pages available. Additional pages are retrieved automatically as needed.
 Keep in mind that Amazon limits the number of pages it makes available.
 
+Valid values of SearchIndex are: 'All','Apparel','Appliances','ArtsAndCrafts','Automotive',
+'Baby','Beauty','Blended','Books','Classical','Collectibles','DVD','DigitalMusic','Electronics',
+'GiftCards','GourmetFood','Grocery','HealthPersonalCare','HomeGarden','Industrial','Jewelry',
+'KindleStore','Kitchen','LawnAndGarden','Marketplace','MP3Downloads','Magazines','Miscellaneous',
+'Music','MusicTracks','MusicalInstruments','MobileApps','OfficeProducts','OutdoorLiving','PCHardware',
+'PetSupplies','Photo','Shoes','Software','SportingGoods','Tools','Toys','UnboxVideo','VHS','Video',
+'VideoGames','Watches','Wireless','WirelessAccessories'
+
 There is also a convenience method to search and return a list of the first N results:
 
      >>> from amazon.api import AmazonAPI
