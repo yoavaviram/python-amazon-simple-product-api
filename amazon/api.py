@@ -516,6 +516,15 @@ class AmazonProduct(object):
         return self._safe_get_element_text('ItemAttributes.Binding')
 
     @property
+    def pages(self):
+        """Pages.
+
+        :return:
+            Pages (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.NumberOfPages')
+
+    @property
     def publication_date(self):
         """Pubdate.
 
