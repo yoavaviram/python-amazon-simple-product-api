@@ -444,9 +444,13 @@ class AmazonProduct(object):
         """Author.
 
         :return:
-            Author (string)
+            Returns of list of authors
         """
-        return self._safe_get_element_text('ItemAttributes.Author')
+        result = []
+        authors = self._safe_get_element('ItemAttributes.Author') or []
+        for author in authors:
+            result.append(author.text)
+        return result
 
     @property
     def publisher(self):
@@ -510,6 +514,15 @@ class AmazonProduct(object):
             Binding (string)
         """
         return self._safe_get_element_text('ItemAttributes.Binding')
+
+    @property
+    def pages(self):
+        """Pages.
+
+        :return:
+            Pages (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.NumberOfPages')
 
     @property
     def publication_date(self):
