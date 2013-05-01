@@ -59,6 +59,12 @@ class SimilartyLookupException(AmazonException):
     pass
 
 
+class BrowseNodeLookupException(AmazonException):
+    """Browse Node Lookup Exception.
+    """
+    pass
+
+
 class AmazonAPI(object):
     def __init__(self, aws_key, aws_secret, aws_associate_tag, region="US"):
         """Initialize an Amazon API Proxy.
@@ -140,6 +146,24 @@ class AmazonAPI(object):
             )
             for item in getattr(root.Items, 'Item', [])
         ]
+
+    def browse_node_lookup(self, ResponseGroup="BrowseNodeInfo", **kwargs):
+        """Browse Node Lookup.
+
+        Returns the specified browse node's name, children, and ancestors.
+        Example:
+            >>> api.browse_node_lookup(BrowseNodeId='163357')
+        """
+        response = self.api.BrowseNodeLookup(
+            ResponseGroup=ResponseGroup, **kwargs)
+        root = objectify.fromstring(response)
+        if root.BrowseNodes.Request.IsValid == 'False':
+            code = root.BrowseNodes.Request.Errors.Error.Code
+            msg = root.BrowseNodes.Request.Errors.Error.Message
+            raise BrowseNodeLookupException(
+                "Amazon BrowseNode Lookup Error: '{0}', '{1}'".format(
+                    code, msg))
+        return [AmazonBrowseNode(node.BrowseNode) for node in root.BrowseNodes]
 
     def search(self, **kwargs):
         """Search.
