@@ -443,6 +443,20 @@ class AmazonProduct(object):
     def author(self):
         """Author.
 
+        Depricated, please use `authors`.
+        :return:
+            Author (string).
+        """
+        authors = self.authors
+        if len(authors):
+            return authors[0]
+        else:
+            return None
+
+    @property
+    def authors(self):
+        """Authors.
+
         :return:
             Returns of list of authors
         """

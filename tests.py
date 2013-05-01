@@ -146,7 +146,7 @@ class TestAmazonApi(TestCase):
     def test_product_attributes(self):
         """Test Product Attributes.
 
-        Tests that all product that are supposed to be accesible are.
+        Tests that all product that are supposed to be accessible are.
         """
         product = self.amazon.lookup(ItemId="B0051QVF7A")
         for attribute in PRODUCT_ATTRIBUTES:
