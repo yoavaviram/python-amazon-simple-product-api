@@ -115,6 +115,13 @@ Similarity Lookup:
      >>> len(products)
      4
 
+Browse Node Lookup:
+     >>> from amazon.api import AmazonAPI
+     >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
+     >>> bn = amazon.browse_node_lookup(BrowseNodeId=2642129011)
+     >>> bn.name
+     'eBook Readers'
+
 For more information about these calls, please consult the [Product Advertising
 API Developer Guide](http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/index.html).
 

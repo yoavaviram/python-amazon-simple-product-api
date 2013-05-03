@@ -151,3 +151,14 @@ class TestAmazonApi(TestCase):
         product = self.amazon.lookup(ItemId="B0051QVF7A")
         for attribute in PRODUCT_ATTRIBUTES:
             getattr(product, attribute)
+
+    def test_browse_node_lookup(self):
+        """Test Browse Node Lookup.
+
+        Test that a lookup by Brose Node ID returns appropriate node.
+        """
+        bnid = 2642129011
+        bn = self.amazon.browse_node_lookup(BrowseNodeId=bnid)[0]
+        assert_equals(bn.id, bnid)
+        assert_equals(bn.name, 'eBook Readers')
+        assert_equals(bn.is_category_root, False)
