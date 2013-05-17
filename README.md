@@ -116,6 +116,7 @@ Similarity Lookup:
      4
 
 Browse Node Lookup:
+
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
      >>> bn = amazon.browse_node_lookup(BrowseNodeId=2642129011)
