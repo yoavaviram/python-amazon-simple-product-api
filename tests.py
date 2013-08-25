@@ -44,24 +44,23 @@ class TestAmazonApi(TestCase):
         Tests that a product lookup for a kindle returns results and that the
         main methods are working.
         """
-        product = self.amazon.lookup(ItemId="B0051QVF7A")
-        assert_equals(
-            product.title,
-            'Kindle, Wi-Fi, 6" E Ink Display - for international shipment'
-        )
-        assert_equals(product.ean, '0814916014354')
+        product = self.amazon.lookup(ItemId="B007HCCNJU")
+        assert_true('Kindle' in  product.title)
+        assert_equals(product.ean, '0814916017775')
         assert_equals(
             product.large_image_url,
-            'http://ecx.images-amazon.com/images/I/411H%2B731ZzL.jpg'
+            'http://ecx.images-amazon.com/images/I/41VZlVs8agL.jpg'
         )
         assert_equals(
             product.get_attribute('Publisher'),
-            'Amazon Digital Services, Inc'
+            'Amazon'
         )
         assert_equals(product.get_attributes(
             ['ItemDimensions.Width', 'ItemDimensions.Height']),
-            {'ItemDimensions.Width': '450', 'ItemDimensions.Height': '34'})
+            {'ItemDimensions.Width': '650', 'ItemDimensions.Height': '130'})
         assert_true(len(product.browse_nodes) > 0)
+        assert_true(product.price_and_currency[0] is not None)
+        assert_true(product.price_and_currency[1] is not None)
         assert_equals(product.browse_nodes[0].id, 2642129011)
         assert_equals(product.browse_nodes[0].name, 'eBook Readers')
 
