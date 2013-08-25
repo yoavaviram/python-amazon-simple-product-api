@@ -45,7 +45,7 @@ class TestAmazonApi(TestCase):
         main methods are working.
         """
         product = self.amazon.lookup(ItemId="B007HCCNJU")
-        assert_true('Kindle' in  product.title)
+        assert_true('Kindle' in product.title)
         assert_equals(product.ean, '0814916017775')
         assert_equals(
             product.large_image_url,
