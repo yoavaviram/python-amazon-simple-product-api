@@ -331,7 +331,9 @@ class AmazonProduct(object):
         self.api = api
         self.parent = None
         if 'region' in kwargs:
-            if kwargs['region'] != "US":
+            if kwargs['region'] == "UK":
+                self.region = "co.uk"
+            elif kwargs['region'] != "US":
                 self.region = kwargs['region']
             else:
                 self.region = "com"
