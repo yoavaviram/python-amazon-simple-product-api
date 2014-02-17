@@ -315,6 +315,19 @@ class AmazonBrowseNode(object):
             node = node.ancestor
         return ancestors
 
+    @property
+    def children(self):
+        """This browse node's children in the browse node tree.
+
+    :return:
+    A list of this browse node's children in the browse node tree.
+    """
+        children = []
+        child_nodes = getattr(self.element, 'Children')
+        for child in getattr(child_nodes, 'BrowseNode', []):
+                children.append(AmazonBrowseNode(child))
+        return children
+
 
 class AmazonProduct(object):
     """A wrapper class for an Amazon product.
