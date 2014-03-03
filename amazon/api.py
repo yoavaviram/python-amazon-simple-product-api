@@ -467,6 +467,15 @@ class AmazonProduct(object):
         return self._safe_get_element_text('ASIN')
 
     @property
+    def sales_rank(self):
+        """Sales Rank
+
+        :return:
+            Sales Rank (integer).
+        """
+        return self._safe_get_element_text('SalesRank')
+
+    @property
     def offer_url(self):
         """Offer URL
 
