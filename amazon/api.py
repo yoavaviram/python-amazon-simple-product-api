@@ -171,6 +171,8 @@ class AmazonAPI(object):
         :return:
             An :class:`~.AmazonSearch` iterable.
         """
+        region = kwargs.get('region', self.region)
+        kwargs.update({'region': region})
         return AmazonSearch(self.api, self.aws_associate_tag, **kwargs)
 
     def search_n(self, n, **kwargs):
@@ -181,6 +183,8 @@ class AmazonAPI(object):
         :return:
             A list of :class:`~.AmazonProduct`.
         """
+        region = kwargs.get('region', self.region)
+        kwargs.update({'region': region})
         items = AmazonSearch(self.api, self.aws_associate_tag, **kwargs)
         return list(islice(items, n))
 
