@@ -20,7 +20,20 @@ import bottlenose
 from lxml import objectify, etree
 
 
-AMAZON_ASSOCIATES_BASE_URL = 'http://www.amazon.{region}/dp/'
+# https://kdp.amazon.com/help?topicId=A1CT8LK6UW2FXJ
+# CN not listed
+DOMAINS = {
+    'CA': 'ca',
+    'DE': 'de',
+    'ES': 'es',
+    'FR': 'fr',
+    'IT': 'it',
+    'JP': 'co.jp',
+    'UK': 'co.uk',
+    'US': 'com',
+}
+
+AMAZON_ASSOCIATES_BASE_URL = 'http://www.amazon.{domain}/dp/'
 
 
 class AmazonException(Exception):
@@ -343,15 +356,7 @@ class AmazonProduct(object):
         self.aws_associate_tag = aws_associate_tag
         self.api = api
         self.parent = None
-        if 'region' in kwargs:
-            if kwargs['region'] == "UK":
-                self.region = "co.uk"
-            elif kwargs['region'] != "US":
-                self.region = kwargs['region']
-            else:
-                self.region = "com"
-        else:
-            self.region = "com"
+        self.region = kwargs.get('region', 'US')
 
     def to_string(self):
         """Convert Item XML to string.
@@ -483,7 +488,7 @@ class AmazonProduct(object):
             Offer URL (string).
         """
         return "{0}{1}/?tag={2}".format(
-            AMAZON_ASSOCIATES_BASE_URL.format(region=self.region.lower()),
+            AMAZON_ASSOCIATES_BASE_URL.format(domain=DOMAINS[self.region]),
             self.asin,
             self.aws_associate_tag)
 
