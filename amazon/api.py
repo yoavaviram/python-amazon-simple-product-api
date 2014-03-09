@@ -216,7 +216,8 @@ class AmazonSearch(object):
         """
         for page in self.iterate_pages():
             for item in getattr(page.Items, 'Item', []):
-                yield AmazonProduct(item, self.aws_associate_tag, self.api)
+                yield AmazonProduct(
+                    item, self.aws_associate_tag, self.api, **self.kwargs)
 
     def iterate_pages(self):
         """Iterate Pages.
