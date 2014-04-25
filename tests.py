@@ -69,7 +69,7 @@ class TestAmazonApi(TestCase):
 
         Tests that a batch product lookup request returns multiple results.
         """
-        asins = ['B00AWH595M', 'B007HCCNJU', 'B00BWYQ9YE', 
+        asins = ['B00AWH595M', 'B007HCCNJU', 'B00BWYQ9YE',
                  'B00BWYRF7E', 'B00D2KJDXA']
         products = self.amazon.lookup(ItemId=','.join(asins))
         assert_equals(len(products), 5)
