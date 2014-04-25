@@ -105,7 +105,7 @@ class AmazonAPI(object):
             An instance of :class:`~.AmazonProduct` if one item was returned,
             or a list of  :class:`~.AmazonProduct` instances if multiple
             items where returned.
-        """
+        """ 
         response = self.api.ItemLookup(ResponseGroup=ResponseGroup, **kwargs)
         root = objectify.fromstring(response)
         if root.Items.Request.IsValid == 'False':
