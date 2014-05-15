@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from nose.tools import assert_equals, assert_true
 
+import datetime
 from amazon.api import AmazonAPI
 from test_settings import (AMAZON_ACCESS_KEY,
                            AMAZON_SECRET_KEY,
@@ -161,3 +162,11 @@ class TestAmazonApi(TestCase):
         assert_equals(bn.id, bnid)
         assert_equals(bn.name, 'eBook Readers')
         assert_equals(bn.is_category_root, False)
+
+    def test_obscure_date(self):
+        """Test Obscure Date Formats
+
+        Test a product with an obscure date format
+        """
+        product = self.amazon.lookup(ItemId="0933635869")
+        assert_equals(product.publication_date, datetime.datetime(1992, 5, 15, 0, 0))
