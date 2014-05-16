@@ -18,6 +18,7 @@ from itertools import islice
 
 import bottlenose
 from lxml import objectify, etree
+import dateutil.parser
 
 
 # https://kdp.amazon.com/help?topicId=A1CT8LK6UW2FXJ
@@ -423,7 +424,9 @@ class AmazonProduct(object):
         value = self._safe_get_element_text(path=path, root=root)
         if value is not None:
             try:
-                value = datetime.datetime.strptime(value, '%Y-%m-%d').date()
+                value = dateutil.parser.parse(value)
+                if value:
+                    value = value.date()
             except ValueError:
                 value = None
 

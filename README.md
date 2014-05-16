@@ -18,6 +18,7 @@ Before you get started, make sure you have:
 
 * Installed [Bottlenose](https://github.com/lionheart/bottlenose) (`pip install bottlenose`)
 * Installed lxml (`pip install lxml`)
+* Installed [dateutil](http://labix.org/python-dateutil) (`pip install dateutil`)
 * An Amazon Product Advertising account
 * An AWS account
 
