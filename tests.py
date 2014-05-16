@@ -169,4 +169,6 @@ class TestAmazonApi(TestCase):
         Test a product with an obscure date format
         """
         product = self.amazon.lookup(ItemId="0933635869")
-        assert_equals(product.publication_date, datetime.datetime(1992, 5, 15, 0, 0))
+        assert_equals(product.publication_date.year, 1992)
+        assert_equals(product.publication_date.month, 5)
+        assert_true(isinstance(product.publication_date, datetime.date))

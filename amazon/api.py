@@ -425,6 +425,8 @@ class AmazonProduct(object):
         if value is not None:
             try:
                 value = dateutil.parser.parse(value)
+                if value:
+                    value = value.date()
             except ValueError:
                 value = None
 
