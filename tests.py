@@ -172,3 +172,23 @@ class TestAmazonApi(TestCase):
         assert_equals(product.publication_date.year, 1992)
         assert_equals(product.publication_date.month, 5)
         assert_true(isinstance(product.publication_date, datetime.date))
+
+    def test_languages_english(self):
+        """Test Language Data
+
+        Test an English product
+        """
+        product = self.amazon.lookup(ItemId="1930846258")
+        assert_true('english' in product.languages)
+        assert_equals(len(product.languages), 1)
+
+    def test_languages_spanish(self):
+        """Test Language Data
+
+        Test an English product
+        """
+        product = self.amazon.lookup(ItemId="8420658537")
+        assert_true('spanish' in product.languages)
+        assert_equals(len(product.languages), 1)
+
+
