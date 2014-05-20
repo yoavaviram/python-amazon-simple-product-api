@@ -766,6 +766,23 @@ class AmazonProduct(object):
             'EditorialReviews.EditorialReview.Content')
 
     @property
+    def languages(self):
+        """Languages.
+
+        Returns a set of languages in lower-case.
+        :return:
+            Returns a set of languages in lower-case (strings).
+        """
+        result = set()
+        languages = self._safe_get_element('ItemAttributes.Languages')
+        if languages is not None:
+            for language in languages.iterchildren():
+                text = self._safe_get_element_text('Name', language)
+                if text:
+                    result.add(text.lower())
+        return result
+
+    @property
     def features(self):
         """Features.
 
