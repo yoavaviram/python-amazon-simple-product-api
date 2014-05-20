@@ -522,9 +522,10 @@ class AmazonProduct(object):
             Returns of list of authors
         """
         result = []
-        authors = self._safe_get_element('ItemAttributes.Author') or []
-        for author in authors:
-            result.append(author.text)
+        authors = self._safe_get_element('ItemAttributes.Author')
+        if authors is not None:
+            for author in authors:
+                result.append(author.text)
         return result
 
     @property
@@ -774,9 +775,10 @@ class AmazonProduct(object):
             Returns a list of 'ItemAttributes.Feature' elements (strings).
         """
         result = []
-        features = self._safe_get_element('ItemAttributes.Feature') or []
-        for feature in features:
-            result.append(feature.text)
+        features = self._safe_get_element('ItemAttributes.Feature')
+        if features is not None:
+            for feature in features:
+                result.append(feature.text)
         return result
 
     @property
