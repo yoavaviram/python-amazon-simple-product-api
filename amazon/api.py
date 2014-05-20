@@ -762,8 +762,30 @@ class AmazonProduct(object):
         :return:
             Editorial Review (string)
         """
-        return self._safe_get_element_text(
-            'EditorialReviews.EditorialReview.Content')
+        reviews = self.editorial_reviews
+        if reviews:
+            return reviews[0]
+        return ''
+
+    @property
+    def editorial_reviews(self):
+        """Editorial Review.
+
+        Returns a list of all editorial reviews.
+
+        :return:
+            A list containing:
+
+                Editorial Review (string)
+        """
+        result = []
+        reviews_node = self._safe_get_element('EditorialReviews')
+
+        for review_node in reviews_node.iterchildren():
+            content_node = getattr(review_node, 'Content')
+            if content_node:
+                result.append(content_node.text)
+        return result
 
     @property
     def features(self):

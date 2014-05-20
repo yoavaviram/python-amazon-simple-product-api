@@ -172,3 +172,22 @@ class TestAmazonApi(TestCase):
         assert_equals(product.publication_date.year, 1992)
         assert_equals(product.publication_date.month, 5)
         assert_true(isinstance(product.publication_date, datetime.date))
+
+    def test_single_editorial_review(self):
+        product = self.amazon.lookup(ItemId="1930846258")
+        expected = u'In the title piece, Alan Turing'
+        assert_equals(product.editorial_reviews[0][:len(expected)], expected)
+        assert_equals(product.editorial_review, product.editorial_reviews[0])
+        assert_equals(len(product.editorial_reviews), 1)
+
+    def test_multiple_editorial_reviews(self):
+        product = self.amazon.lookup(ItemId="B000FBJCJE")
+        expected = u'Only once in a great'
+        assert_equals(product.editorial_reviews[0][:len(expected)], expected)
+        expected = u'From the opening line'
+        assert_equals(product.editorial_reviews[1][:len(expected)], expected)
+        # duplicate data, amazon user data is great...
+        expected = u'Only once in a great'
+        assert_equals(product.editorial_reviews[2][:len(expected)], expected)
+
+        assert_equals(len(product.editorial_reviews), 3)
