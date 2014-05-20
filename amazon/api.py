@@ -529,6 +529,18 @@ class AmazonProduct(object):
 
     @property
     def creators(self):
+        """Creators.
+
+        Creators are not the authors. These are usually editors, translators,
+        narrators, etc.
+
+        :return:
+            Returns a list of creators where each is a tuple containing:
+
+                1. The creators name (string).
+                2. The creators role (string).
+
+        """
         # return tuples of name and role
         result = []
         creators = self._safe_get_element('ItemAttributes.Creator')
