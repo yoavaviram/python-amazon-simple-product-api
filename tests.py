@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from nose.tools import assert_equals, assert_true
+from nose.tools import assert_equals, assert_true, assert_false
 
 import datetime
 from amazon.api import AmazonAPI
@@ -172,3 +172,26 @@ class TestAmazonApi(TestCase):
         assert_equals(product.publication_date.year, 1992)
         assert_equals(product.publication_date.month, 5)
         assert_true(isinstance(product.publication_date, datetime.date))
+
+    def test_single_creator(self):
+        """Test a product with a single creator
+        """
+        product = self.amazon.lookup(ItemId="B00005NZJA")
+        creators = dict(product.creators)
+        assert_equals(creators[u"Jonathan Davis"], u"Narrator")
+        assert_equals(len(creators.values()), 1)
+
+    def test_multiple_creators(self):
+        """Test a product with multiple creators
+        """
+        product = self.amazon.lookup(ItemId="B007V8RQC4")
+        creators = dict(product.creators)
+        assert_equals(creators[u"John Gregory Betancourt"], u"Editor")
+        assert_equals(creators[u"Colin Azariah-Kribbs"], u"Editor")
+        assert_equals(len(creators.values()), 2)
+
+    def test_no_creators(self):
+        """Test a product with no creators
+        """
+        product = self.amazon.lookup(ItemId="8420658537")
+        assert_false(product.creators)
