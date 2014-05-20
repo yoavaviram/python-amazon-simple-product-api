@@ -781,10 +781,11 @@ class AmazonProduct(object):
         result = []
         reviews_node = self._safe_get_element('EditorialReviews')
 
-        for review_node in reviews_node.iterchildren():
-            content_node = getattr(review_node, 'Content')
-            if content_node:
-                result.append(content_node.text)
+        if reviews_node is not None:
+            for review_node in reviews_node.iterchildren():
+                content_node = getattr(review_node, 'Content')
+                if content_node is not None:
+                    result.append(content_node.text)
         return result
 
     @property
