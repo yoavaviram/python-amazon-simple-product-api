@@ -405,7 +405,7 @@ class AmazonProduct(object):
             String or None.
         """
         element = self._safe_get_element(path, root)
-        if element:
+        if element is not None:
             return element.text
         else:
             return None
