@@ -141,7 +141,7 @@ class TestAmazonApi(TestCase):
         Tests that a similarity lookup for a kindle returns 10 results.
         """
         products = self.amazon.similarity_lookup(ItemId="B0051QVF7A")
-        assert_equals(len(products), 10)
+        assert_true(len(products) > 5)
 
     def test_product_attributes(self):
         """Test Product Attributes.
@@ -214,3 +214,21 @@ class TestAmazonApi(TestCase):
         assert_equals(product.editorial_reviews[2][:len(expected)], expected)
 
         assert_equals(len(product.editorial_reviews), 3)
+
+    def test_languages_english(self):
+        """Test Language Data
+
+        Test an English product
+        """
+        product = self.amazon.lookup(ItemId="1930846258")
+        assert_true('english' in product.languages)
+        assert_equals(len(product.languages), 1)
+
+    def test_languages_spanish(self):
+        """Test Language Data
+
+        Test an English product
+        """
+        product = self.amazon.lookup(ItemId="8420658537")
+        assert_true('spanish' in product.languages)
+        assert_equals(len(product.languages), 1)
