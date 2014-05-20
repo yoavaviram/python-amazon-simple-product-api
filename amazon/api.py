@@ -528,6 +528,16 @@ class AmazonProduct(object):
         return result
 
     @property
+    def creators(self):
+        # return tuples of name and role
+        result = []
+        creators = self._safe_get_element('ItemAttributes.Creator') or []
+        for creator in creators:
+            role = creator.attrib['Role'] if 'Role' in creator.attrib else None
+            result.append((creator.text, role))
+        return result
+
+    @property
     def publisher(self):
         """Publisher.
 
