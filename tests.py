@@ -232,3 +232,18 @@ class TestAmazonApi(TestCase):
         product = self.amazon.lookup(ItemId="8420658537")
         assert_true('spanish' in product.languages)
         assert_equals(len(product.languages), 1)
+
+    def test_region(self):
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
+        assert_equals(amazon.region, 'US')
+
+        # old 'region' parameter
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, region='UK')
+        assert_equals(amazon.region, 'UK')
+
+        # kwargs method
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, Region='UK')
+        assert_equals(amazon.region, 'UK')
+
+    def test_kwargs(self):
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, MaxQS=0.7)

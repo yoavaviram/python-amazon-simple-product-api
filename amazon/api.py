@@ -80,8 +80,14 @@ class BrowseNodeLookupException(AmazonException):
 
 
 class AmazonAPI(object):
-    def __init__(self, aws_key, aws_secret, aws_associate_tag, region="US"):
+    def __init__(self, aws_key, aws_secret, aws_associate_tag, **kwargs):
         """Initialize an Amazon API Proxy.
+
+        kwargs values are passed directly to Bottlenose. Check the Bottlenose
+        API for valid values (some are provided below).
+        For legacy support, the older 'region' value is still supported.
+        Code should be updated to use the Bottlenose 'Region' value
+        instead.
 
         :param aws_key:
             A string representing an AWS authentication key.
@@ -89,15 +95,46 @@ class AmazonAPI(object):
             A string representing an AWS authentication secret.
         :param aws_associate_tag:
             A string representing an AWS associate tag.
-        :param region:
-            A string representing the region, defaulting to "US" (amazon.com)
+
+        Important Bottlenose arguments:
+        :param Region:
+            ccTLD you want to search for products on (e.g. 'UK'
+            for amazon.co.uk).
             See keys of bottlenose.api.SERVICE_DOMAINS for options, which were
             CA, CN, DE, ES, FR, IT, JP, UK, US at the time of writing.
+            Must be uppercase. Default is 'US' (amazon.com).
+        :param MaxQPS:
+            Optional maximum queries per second. If we've made an API call
+            on this object more recently that 1/MaxQPS, we'll wait
+            before making the call. Useful for making batches of queries.
+            You generally want to set this a little lower than the
+            max (so 0.9, not 1.0).
+            Amazon limits the number of calls per hour, so for long running
+            tasks this should be set to 0.9 to ensure you don't hit the maximum.
+            Defaults to None (unlimited).
+        :param Timeout:
+            Optional timeout for queries.
+            Defaults to None.
+        :param CacheReader:
+            Called before attempting to make an API call.
+            A function that takes a single argument, the URL that
+            would be passed to the API, minus auth information,
+            and returns a cached version of the (unparsed) response,
+            or None.
+            Defaults to None.
+        :param CacheWriter:
+            Called after a successful API call. A function that
+            takes two arguments, the same URL passed to
+            CacheReader, and the (unparsed) API response.
+            Defaults to None.
         """
+        # support older style calls
+        if 'region' in kwargs:
+            kwargs['Region'] = kwargs['region']
         self.api = bottlenose.Amazon(
-            aws_key, aws_secret, aws_associate_tag, Region=region)
+            aws_key, aws_secret, aws_associate_tag, **kwargs)
         self.aws_associate_tag = aws_associate_tag
-        self.region = region
+        self.region = kwargs.get('Region', 'US')
 
     def lookup(self, ResponseGroup="Large", **kwargs):
         """Lookup an Amazon Product.
