@@ -246,4 +246,4 @@ class TestAmazonApi(TestCase):
         assert_equals(amazon.region, 'UK')
 
     def test_kwargs(self):
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, MaxQS=0.7)
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, MaxQPS=0.7)

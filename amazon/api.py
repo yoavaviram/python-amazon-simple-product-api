@@ -131,6 +131,7 @@ class AmazonAPI(object):
         # support older style calls
         if 'region' in kwargs:
             kwargs['Region'] = kwargs['region']
+            del kwargs['region']
         self.api = bottlenose.Amazon(
             aws_key, aws_secret, aws_associate_tag, **kwargs)
         self.aws_associate_tag = aws_associate_tag
