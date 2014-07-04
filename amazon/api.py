@@ -28,6 +28,7 @@ DOMAINS = {
     'DE': 'de',
     'ES': 'es',
     'FR': 'fr',
+    'IN': 'in',
     'IT': 'it',
     'JP': 'co.jp',
     'UK': 'co.uk',
