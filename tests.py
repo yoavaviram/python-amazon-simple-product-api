@@ -8,6 +8,7 @@ from test_settings import (AMAZON_ACCESS_KEY,
                            AMAZON_SECRET_KEY,
                            AMAZON_ASSOC_TAG)
 
+TEST_ASIN = "B007HCCNJU"
 
 PRODUCT_ATTRIBUTES = [
     'asin', 'author', 'binding', 'brand', 'browse_nodes', 'ean', 'edition',
@@ -140,7 +141,7 @@ class TestAmazonApi(TestCase):
 
         Tests that a similarity lookup for a kindle returns 10 results.
         """
-        products = self.amazon.similarity_lookup(ItemId="B0051QVF7A")
+        products = self.amazon.similarity_lookup(ItemId=TEST_ASIN)
         assert_true(len(products) > 5)
 
     def test_product_attributes(self):
@@ -148,7 +149,7 @@ class TestAmazonApi(TestCase):
 
         Tests that all product that are supposed to be accessible are.
         """
-        product = self.amazon.lookup(ItemId="B0051QVF7A")
+        product = self.amazon.lookup(ItemId=TEST_ASIN)
         for attribute in PRODUCT_ATTRIBUTES:
             getattr(product, attribute)
 
