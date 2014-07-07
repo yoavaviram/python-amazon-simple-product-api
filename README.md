@@ -22,6 +22,9 @@ Before you get started, make sure you have:
 * An Amazon Product Advertising account
 * An AWS account
 
+Installation
+-------------
+     pip install python-amazon-simple-product-api
 
 Usage
 -----
