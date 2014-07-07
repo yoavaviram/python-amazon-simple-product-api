@@ -56,7 +56,7 @@ Lookup on amazon.de instead of amazon.com by setting the region:
      >>> region_options = bottlenose.api.SERVICE_DOMAINS.keys()
      >>> region_options
      ['US', 'FR', 'CN', 'UK', 'CA', 'DE', 'JP', 'IT', 'ES']
-     >>> amazon_de = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, Region="DE")
+     >>> amazon_de = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, region="DE")
      >>> product = amazon_de.lookup(ItemId='B0051QVF7A')
      >>> product.title
      u'Kindle, WLAN, 15 cm (6 Zoll) E Ink Display, deutsches Men\xfc'
