@@ -33,19 +33,19 @@ Lookup:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
-     >>> product = amazon.lookup(ItemId='B0051QVF7A')
+     >>> product = amazon.lookup(ItemId='B00EOE0WKQ')
      >>> product.title
-     'Kindle, Wi-Fi, 6" E Ink Display - for international shipment'
+     'Amazon Fire Phone, 32GB (AT&T)'
      >>> product.price_and_currency
-     (89.0, 'USD')
+     (199.0, 'USD')
      >>> product.ean
-     '0814916014354'
+     '0848719035209'
      >>> product.large_image_url
-     'http://ecx.images-amazon.com/images/I/411H%2B731ZzL.jpg'
+     'http://ecx.images-amazon.com/images/I/51BrZzpkWrL.jpg'
      >>> product.get_attribute('Publisher')
-     'Amazon Digital Services, Inc'
+     'Amazon'
      >>> product.get_attributes(['ItemDimensions.Width', 'ItemDimensions.Height'])
-     {'ItemDimensions.Width': '450', 'ItemDimensions.Height': '34'}
+     {'ItemDimensions.Width': '262', 'ItemDimensions.Height': '35'}
 
 (the API wrapper also supports many other product attributes)
 
@@ -56,7 +56,7 @@ Lookup on amazon.de instead of amazon.com by setting the region:
      >>> region_options = bottlenose.api.SERVICE_DOMAINS.keys()
      >>> region_options
      ['US', 'FR', 'CN', 'UK', 'CA', 'DE', 'JP', 'IT', 'ES']
-     >>> amazon_de = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, Region="DE")
+     >>> amazon_de = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, region="DE")
      >>> product = amazon_de.lookup(ItemId='B0051QVF7A')
      >>> product.title
      u'Kindle, WLAN, 15 cm (6 Zoll) E Ink Display, deutsches Men\xfc'
