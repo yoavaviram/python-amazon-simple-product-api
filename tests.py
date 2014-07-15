@@ -8,7 +8,9 @@ from test_settings import (AMAZON_ACCESS_KEY,
                            AMAZON_SECRET_KEY,
                            AMAZON_ASSOC_TAG)
 
+
 TEST_ASIN = "B007HCCNJU"
+
 
 PRODUCT_ATTRIBUTES = [
     'asin', 'author', 'binding', 'brand', 'browse_nodes', 'ean', 'edition',
@@ -235,7 +237,8 @@ class TestAmazonApi(TestCase):
         assert_equals(len(product.languages), 1)
 
     def test_region(self):
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
+            AMAZON_ASSOC_TAG)
         assert_equals(amazon.region, 'US')
 
         # old 'region' parameter
