@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# !/usr/bin/python
 #
 # Copyright (C) 2012 Yoav Aviram.
 #
@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,6 +40,18 @@ AMAZON_ASSOCIATES_BASE_URL = 'http://www.amazon.{domain}/dp/'
 
 class AmazonException(Exception):
     """Base Class for Amazon Api Exceptions.
+    """
+    pass
+
+
+class CartException(AmazonException):
+    """Cart related Exception
+    """
+    pass
+
+
+class CartInfoMismatchException(CartException):
+    """HMAC, CartId and AssociateTag did not match
     """
     pass
 
@@ -133,6 +145,10 @@ class AmazonAPI(object):
         if 'region' in kwargs:
             kwargs['Region'] = kwargs['region']
             del kwargs['region']
+
+        if 'Version' not in kwargs:
+            kwargs['Version'] = '2013-08-01'
+
         self.api = bottlenose.Amazon(
             aws_key, aws_secret, aws_associate_tag, **kwargs)
         self.aws_associate_tag = aws_associate_tag
@@ -241,12 +257,232 @@ class AmazonAPI(object):
         items = AmazonSearch(self.api, self.aws_associate_tag, **kwargs)
         return list(islice(items, n))
 
+    def cart_create(self, items, **kwargs):
+        """CartCreate.
+        :param items:
+            A dictionary containing the items to be added to the cart. Or a list containing these dictionaries
+            It is not possible to create an empty cart!
+            example: [{'offer_id': 'rt2ofih3f389nwiuhf8934z87o3f4h', 'quantity': 1}]
+
+        :return:
+            An :class:`~.AmazonCart`.
+        """
+
+        if isinstance(items, dict):
+            items = [items]
+
+        if len(items) > 10:
+            raise CartException("You can't add more than 10 items at once")
+
+        offer_id_key_template = 'Item.%s.OfferListingId'
+        quantity_key_template = 'Item.%s.Quantity'
+        i = 0
+
+        for item in items:
+            i += 1
+            kwargs[offer_id_key_template % (i, )] = item['offer_id']
+            kwargs[quantity_key_template % (i, )] = item['quantity']
+
+        response = self.api.CartCreate(**kwargs)
+        root = objectify.fromstring(response)
+
+        return AmazonCart(root)
+
+    def cart_add(self, items, CartId=None, HMAC=None, **kwargs):
+        """CartAdd.
+        :param items:
+            A dictionary containing the items to be added to the cart. Or a list containing these dictionaries
+            It is not possible to create an empty cart!
+            example: [{'offer_id': 'rt2ofih3f389nwiuhf8934z87o3f4h', 'quantity': 1}]
+        :param CartId: Id of Cart
+        :param HMAC: HMAC of Cart, see CartCreate for more info
+        :return:
+            An :class:`~.AmazonCart`.
+        """
+        if not CartId or not HMAC:
+            raise CartException('CartId required for CartClear call')
+
+        if isinstance(items, dict):
+            items = [items]
+
+        if len(items) > 10:
+            raise CartException("You can't add more than 10 items at once")
+
+        offer_id_key_template = 'Item.%s.OfferListingId'
+        quantity_key_template = 'Item.%s.Quantity'
+        i = 0
+
+        for item in items:
+            i += 1
+            kwargs[offer_id_key_template % (i, )] = item['offer_id']
+            kwargs[quantity_key_template % (i, )] = item['quantity']
+
+        response = self.api.CartAdd(CartId=CartId, HMAC=HMAC, **kwargs)
+        root = objectify.fromstring(response)
+
+        new_cart = AmazonCart(root)
+        self._check_for_cart_error(new_cart)
+
+        return new_cart
+
+    def cart_clear(self, CartId=None, HMAC=None, **kwargs):
+        """CartClear. Removes all items from cart
+        :param CartId: Id of cart
+        :param HMAC: HMAC of cart. Do not use url encoded
+        :return: An :class:`~.AmazonCart`.
+        """
+        if not CartId or not HMAC:
+            raise CartException('CartId required for CartClear call')
+        response = self.api.CartClear(CartId=CartId, HMAC=HMAC, **kwargs)
+        root = objectify.fromstring(response)
+
+        new_cart = AmazonCart(root)
+        self._check_for_cart_error(new_cart)
+
+        return new_cart
+
+    def cart_get(self, CartId=None, HMAC=None, **kwargs):
+        """CartGet fetches existing cart
+        :param CartId: see CartCreate
+        :param HMAC: see CartCreate
+        :return: An :class:`~.AmazonCart`.
+        """
+        if not CartId or not HMAC:
+            raise CartException('CartId required for CartGet call')
+        response = self.api.CartGet(CartId=CartId, HMAC=HMAC, **kwargs)
+        root = objectify.fromstring(response)
+
+        cart = AmazonCart(root)
+        self._check_for_cart_error(cart)
+
+        return cart
+
+    def cart_modify(self, items, CartId=None, HMAC=None, **kwargs):
+        """CartAdd.
+        :param items:
+            A dictionary containing the items to be added to the cart. Or a list containing these dictionaries
+            example: [{'cart_item_id': 'rt2ofih3f389nwiuhf8934z87o3f4h', 'quantity': 1}]
+        :param CartId: Id of Cart
+        :param HMAC: HMAC of Cart, see CartCreate for more info
+        :return:
+            An :class:`~.AmazonCart`.
+        """
+        if not CartId or not HMAC:
+            raise CartException('CartId required for CartModify call')
+
+        if isinstance(items, dict):
+            items = [items]
+
+        if len(items) > 10:
+            raise CartException("You can't add more than 10 items at once")
+
+        cart_item_id_key_template = 'Item.%s.CartItemId'
+        quantity_key_template = 'Item.%s.Quantity'
+        i = 0
+
+        for item in items:
+            i += 1
+            kwargs[cart_item_id_key_template % (i, )] = item['cart_item_id']
+            kwargs[quantity_key_template % (i, )] = item['quantity']
+
+        response = self.api.CartModify(CartId=CartId, HMAC=HMAC, **kwargs)
+        root = objectify.fromstring(response)
+
+        new_cart = AmazonCart(root)
+        self._check_for_cart_error(new_cart)
+
+        return new_cart
+
+    def _check_for_cart_error(self, cart):
+        if cart._safe_get_element('Cart.Request.Errors') is not None:
+            error = cart._safe_get_element('Cart.Request.Errors.Error.Code').text
+            if error == 'AWS.ECommerceService.CartInfoMismatch':
+                raise CartInfoMismatchException(
+                    'CartGet failed: AWS.ECommerceService.CartInfoMismatch make sure '
+                    'AssociateTag, CartId and HMAC are correct (dont use URLEncodedHMAC!!!)'
+                )
+            raise CartException('CartGet failed: ' + error)
+
+
+class LXMLWrapper(object):
+    def __init__(self, parsed_response):
+        self.parsed_response = parsed_response
+
+    def to_string(self):
+        """Convert Item XML to string.
+
+        :return:
+            A string representation of the Item xml.
+        """
+        return etree.tostring(self.parsed_response, pretty_print=True)
+
+    def _safe_get_element(self, path, root=None):
+        """Safe Get Element.
+
+        Get a child element of root (multiple levels deep) failing silently
+        if any descendant does not exist.
+
+        :param root:
+            Lxml element.
+        :param path:
+            String path (i.e. 'Items.Item.Offers.Offer').
+        :return:
+            Element or None.
+        """
+        elements = path.split('.')
+        parent = root if root is not None else self.parsed_response
+        for element in elements[:-1]:
+            parent = getattr(parent, element, None)
+            if parent is None:
+                return None
+        return getattr(parent, elements[-1], None)
+
+    def _safe_get_element_text(self, path, root=None):
+        """Safe get element text.
+
+        Get element as string or None,
+        :param root:
+            Lxml element.
+        :param path:
+            String path (i.e. 'Items.Item.Offers.Offer').
+        :return:
+            String or None.
+        """
+        element = self._safe_get_element(path, root)
+        if element is not None:
+            return element.text
+        else:
+            return None
+
+    def _safe_get_element_date(self, path, root=None):
+        """Safe get elemnent date.
+
+        Get element as datetime.date or None,
+        :param root:
+            Lxml element.
+        :param path:
+            String path (i.e. 'Items.Item.Offers.Offer').
+        :return:
+            datetime.date or None.
+        """
+        value = self._safe_get_element_text(path=path, root=root)
+        if value is not None:
+            try:
+                value = dateutil.parser.parse(value)
+                if value:
+                    value = value.date()
+            except ValueError:
+                value = None
+
+        return value
+
 
 class AmazonSearch(object):
     """ Amazon Search.
 
     A class providing an iterable over amazon search results.
     """
+
     def __init__(self, api, aws_associate_tag, **kwargs):
         """Initialise
 
@@ -313,11 +549,7 @@ class AmazonSearch(object):
         return root
 
 
-class AmazonBrowseNode(object):
-
-    def __init__(self, element):
-        self.element = element
-
+class AmazonBrowseNode(LXMLWrapper):
     @property
     def id(self):
         """Browse Node ID.
@@ -327,8 +559,8 @@ class AmazonBrowseNode(object):
         :return:
             ID (integer)
         """
-        if hasattr(self.element, 'BrowseNodeId'):
-            return int(self.element['BrowseNodeId'])
+        if hasattr(self.parsed_response, 'BrowseNodeId'):
+            return int(self.parsed_response['BrowseNodeId'])
         return None
 
     @property
@@ -338,14 +570,14 @@ class AmazonBrowseNode(object):
         :return:
             Name (string)
         """
-        return getattr(self.element, 'Name', None)
+        return getattr(self.parsed_response, 'Name', None)
 
     @property
     def is_category_root(self):
         """Boolean value that specifies if the browse node is at the top of
         the browse node tree.
         """
-        return getattr(self.element, 'IsCategoryRoot', False)
+        return getattr(self.parsed_response, 'IsCategoryRoot', False)
 
     @property
     def ancestor(self):
@@ -354,7 +586,7 @@ class AmazonBrowseNode(object):
         :return:
             The ancestor as an :class:`~.AmazonBrowseNode`, or None.
         """
-        ancestors = getattr(self.element, 'Ancestors', None)
+        ancestors = getattr(self.parsed_response, 'Ancestors', None)
         if hasattr(ancestors, 'BrowseNode'):
             return AmazonBrowseNode(ancestors['BrowseNode'])
         return None
@@ -381,13 +613,13 @@ class AmazonBrowseNode(object):
     A list of this browse node's children in the browse node tree.
     """
         children = []
-        child_nodes = getattr(self.element, 'Children')
+        child_nodes = getattr(self.parsed_response, 'Children')
         for child in getattr(child_nodes, 'BrowseNode', []):
-                children.append(AmazonBrowseNode(child))
+            children.append(AmazonBrowseNode(child))
         return children
 
 
-class AmazonProduct(object):
+class AmazonProduct(LXMLWrapper):
     """A wrapper class for an Amazon product.
     """
 
@@ -397,79 +629,11 @@ class AmazonProduct(object):
         :param item:
             Lxml Item element.
         """
-        self.item = item
+        super(AmazonProduct, self).__init__(item)
         self.aws_associate_tag = aws_associate_tag
         self.api = api
         self.parent = None
         self.region = kwargs.get('region', 'US')
-
-    def to_string(self):
-        """Convert Item XML to string.
-
-        :return:
-            A string representation of the Item xml.
-        """
-        return etree.tostring(self.item, pretty_print=True)
-
-    def _safe_get_element(self, path, root=None):
-        """Safe Get Element.
-
-        Get a child element of root (multiple levels deep) failing silently
-        if any descendant does not exist.
-
-        :param root:
-            Lxml element.
-        :param path:
-            String path (i.e. 'Items.Item.Offers.Offer').
-        :return:
-            Element or None.
-        """
-        elements = path.split('.')
-        parent = root if root is not None else self.item
-        for element in elements[:-1]:
-            parent = getattr(parent, element, None)
-            if parent is None:
-                return None
-        return getattr(parent, elements[-1], None)
-
-    def _safe_get_element_text(self, path, root=None):
-        """Safe get element text.
-
-        Get element as string or None,
-        :param root:
-            Lxml element.
-        :param path:
-            String path (i.e. 'Items.Item.Offers.Offer').
-        :return:
-            String or None.
-        """
-        element = self._safe_get_element(path, root)
-        if element is not None:
-            return element.text
-        else:
-            return None
-
-    def _safe_get_element_date(self, path, root=None):
-        """Safe get elemnent date.
-
-        Get element as datetime.date or None,
-        :param root:
-            Lxml element.
-        :param path:
-            String path (i.e. 'Items.Item.Offers.Offer').
-        :return:
-            datetime.date or None.
-        """
-        value = self._safe_get_element_text(path=path, root=root)
-        if value is not None:
-            try:
-                value = dateutil.parser.parse(value)
-                if value:
-                    value = value.date()
-            except ValueError:
-                value = None
-
-        return value
 
     @property
     def price_and_currency(self):
@@ -979,3 +1143,89 @@ class AmazonProduct(object):
             return []
 
         return [AmazonBrowseNode(child) for child in root.iterchildren()]
+
+
+class AmazonCart(LXMLWrapper):
+    """Wrapper around Amazon shopping cart. Allows iterating over Items in the cart.
+    """
+
+    @property
+    def cart_id(self):
+        return self._safe_get_element_text('Cart.CartId')
+
+    @property
+    def purchase_url(self):
+        return self._safe_get_element_text('Cart.PurchaseURL')
+
+    @property
+    def amount(self):
+        return self._safe_get_element_text('Cart.SubTotal.Amount')
+
+    @property
+    def formatted_price(self):
+        return self._safe_get_element_text('Cart.SubTotal.FormattedPrice')
+
+    @property
+    def currency_code(self):
+        return self._safe_get_element_text('Cart.SubTotal.CurrencyCode')
+
+    @property
+    def hmac(self):
+        return self._safe_get_element_text('Cart.HMAC')
+
+    @property
+    def url_encoded_hmac(self):
+        return self._safe_get_element_text('Cart.URLEncodedHMAC')
+
+    def __len__(self):
+        return len(self._safe_get_element('Cart.CartItems.CartItem'))
+
+    def __iter__(self):
+        items = self._safe_get_element('Cart.CartItems.CartItem')
+        if items is not None:
+            for item in items:
+                yield AmazonCartItem(item)
+
+    def __getitem__(self, cart_item_id):
+        """
+        :param cart_item_id: access item by CartItemId
+        :return: AmazonCartItem
+        """
+        for item in self:
+            if item.cart_item_id == cart_item_id:
+                return item
+        raise KeyError('no item found with CartItemId: %s' % (cart_item_id,))
+
+
+class AmazonCartItem(LXMLWrapper):
+    @property
+    def asin(self):
+        return self._safe_get_element_text('ASIN')
+
+    @property
+    def quantity(self):
+        return self._safe_get_element_text('Quantity')
+
+    @property
+    def cart_item_id(self):
+        return self._safe_get_element_text('CartItemId')
+
+    @property
+    def title(self):
+        return self._safe_get_element_text('Title')
+
+    @property
+    def product_group(self):
+        return self._safe_get_element_text('ProductGroup')
+
+    @property
+    def formatted_price(self):
+        return self._safe_get_element_text('Price.FormattedPrice')
+
+    @property
+    def amount(self):
+        return self._safe_get_element_text('Price.Amount')
+
+    @property
+    def currency_code(self):
+        return self._safe_get_element_text('Price.CurrencyCode')
