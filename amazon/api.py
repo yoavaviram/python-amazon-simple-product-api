@@ -495,6 +495,8 @@ class AmazonSearch(object):
         """
         self.kwargs = kwargs
         self.current_page = 1
+        self.total_results = 0
+        self.total_pages = 0
         self.api = api
         self.aws_associate_tag = aws_associate_tag
 
@@ -508,6 +510,9 @@ class AmazonSearch(object):
             Yields a :class:`~.AmazonProduct` for each result item.
         """
         for page in self.iterate_pages():
+            self.total_results = page.Items.TotalResults
+            self.total_pages = page.Items.TotalPages
+
             for item in getattr(page.Items, 'Item', []):
                 yield AmazonProduct(
                     item, self.aws_associate_tag, self.api, **self.kwargs)
