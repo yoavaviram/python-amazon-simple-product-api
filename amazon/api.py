@@ -936,6 +936,15 @@ class AmazonProduct(LXMLWrapper):
         return upc
 
     @property
+    def color(self):
+        """Color.
+
+        :return:
+            Color (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Color')
+
+    @property
     def sku(self):
         """SKU.
 
