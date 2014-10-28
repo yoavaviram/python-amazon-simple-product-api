@@ -943,6 +943,60 @@ class AmazonProduct(LXMLWrapper):
             Color (string)
         """
         return self._safe_get_element_text('ItemAttributes.Color')
+        
+    @property
+    def is_autographed(self):
+        """Is autographed.
+
+        :returns:
+            is_autographed (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.IsAutographed')
+
+    @property
+    def is_memorabilia(self):
+        """Is memorabilia
+
+        :returns:
+            is_memorabilia (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.IsMemorabilia')
+
+    @property
+    def number_of_items(self):
+        """number of items
+
+        :returns:
+            number of items for listing (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.NumberOfItems')
+
+    @property
+    def product_group(self):
+        """product 
+
+        :returns:
+            product group for listing (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.ProductGroup') 
+        
+    @property
+    def product_type_name(self):
+        """product type name       
+
+        :returns:
+            product type name (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.ProductTypeName')
+
+    @property
+    def studio(self):
+        """studio
+
+        :returns:
+            studio for listing
+        """
+        return self._safe_get_element_text('ItemAttributes.Studio')
 
     @property
     def sku(self):
