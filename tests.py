@@ -3,7 +3,11 @@ from unittest import TestCase
 from nose.tools import assert_equals, assert_true, assert_false
 
 import datetime
-from amazon.api import AmazonAPI, CartException, CartInfoMismatchException
+from amazon.api import (AmazonAPI,
+                        CartException,
+                        CartInfoMismatchException,
+                        SearchException,
+                        AsinNotFound)
 from test_settings import (AMAZON_ACCESS_KEY,
                            AMAZON_SECRET_KEY,
                            AMAZON_ASSOC_TAG)
@@ -97,6 +101,13 @@ class TestAmazonApi(TestCase):
         assert_equals(product.browse_nodes[0].id, 2642129011)
         assert_equals(product.browse_nodes[0].name, 'eBook Readers')
 
+    def test_lookup_nonexistent_asin(self):
+        """Test Product Lookup with a nonexistent ASIN.
+
+        Tests that a product lookup for a nonexistent ASIN raises AsinNotFound.
+        """
+        self.assertRaises(AsinNotFound, self.amazon.lookup, ItemId="ABCD1234")
+
     def test_batch_lookup(self):
         """Test Batch Product Lookup.
 
@@ -135,6 +146,16 @@ class TestAmazonApi(TestCase):
             SearchIndex='All'
         )
         assert_equals(len(products), 1)
+
+    def test_search_no_results(self):
+        """Test Product Search with no results.
+
+        Tests that a product search with that returns no results throws a
+        SearchException.
+        """
+        products = self.amazon.search(Title='HarryPotter',
+                                      SearchIndex='Automotive')
+        self.assertRaises(SearchException, (x for x in products).next)
 
     def test_amazon_api_defaults_to_US(self):
         """Test Amazon API defaults to the US store."""

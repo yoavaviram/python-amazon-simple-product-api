@@ -538,7 +538,8 @@ class AmazonSearch(object):
         """
         response = self.api.ItemSearch(ResponseGroup=ResponseGroup, **kwargs)
         root = objectify.fromstring(response)
-        if root.Items.Request.IsValid == 'False':
+        if (hasattr(root.Items.Request, 'Errors') and
+                not hasattr(root.Items, 'Item')):
             code = root.Items.Request.Errors.Error.Code
             msg = root.Items.Request.Errors.Error.Message
             if code == 'AWS.ParameterOutOfRange':
