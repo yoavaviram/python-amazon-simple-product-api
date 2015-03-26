@@ -1154,7 +1154,7 @@ class AmazonProduct(LXMLWrapper):
 
         return [AmazonBrowseNode(child) for child in root.iterchildren()]
 
-   @property
+    @property
     def genre(self):
         """Movie Genre.
 
