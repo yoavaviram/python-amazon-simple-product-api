@@ -861,7 +861,7 @@ class AmazonProduct(object):
         :return:
             The genre of a movie.
         """
-        return self._safe_get_element_text('Genre')
+        return self._safe_get_element_text('ItemAttributes.Genre')
 
     @property
     def actors(self):
@@ -871,20 +871,20 @@ class AmazonProduct(object):
             A list of actors names.
         """
         result = []
-        actors = self._safe_get_element('Actor') or []
+        actors = self._safe_get_element('ItemAttributes.Actor') or []
         for actor in actors:
             result.append(actor.text)
         return result
 
     @property
-    def director(self):
+    def directors(self):
         """Movie Directors.
 
         :return:
             A list of directors for a movie.
         """
         result = []
-        directors = self._safe_get_element('Director') or []
+        directors = self._safe_get_element('ItemAttributes.Director') or []
         for director in directors:
             result.append(director.text)
         return result
