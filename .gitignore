@@ -4,3 +4,4 @@ MANIFEST
 build/
 dist/
 .idea
+test_settings.py
