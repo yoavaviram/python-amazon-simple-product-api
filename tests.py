@@ -1,4 +1,4 @@
-from unittest import TestCase
+import unittest
 
 from nose.tools import assert_equals, assert_true, assert_false
 
@@ -49,7 +49,7 @@ def cache_clear():
     CACHE = {}
 
 
-class TestAmazonApi(TestCase):
+class TestAmazonApi(unittest.TestCase):
     """Test Amazon API
 
     Test Class for Amazon simple API wrapper.
@@ -81,12 +81,12 @@ class TestAmazonApi(TestCase):
         Tests that a product lookup for a kindle returns results and that the
         main methods are working.
         """
-        product = self.amazon.lookup(ItemId="B007HCCNJU")
+        product = self.amazon.lookup(ItemId="B00I15SB16")
         assert_true('Kindle' in product.title)
-        assert_equals(product.ean, '0814916017775')
+        assert_equals(product.ean, '0848719039726')
         assert_equals(
             product.large_image_url,
-            'http://ecx.images-amazon.com/images/I/41VZlVs8agL.jpg'
+            'http://ecx.images-amazon.com/images/I/51XGerXeYeL.jpg'
         )
         assert_equals(
             product.get_attribute('Publisher'),
@@ -94,7 +94,7 @@ class TestAmazonApi(TestCase):
         )
         assert_equals(product.get_attributes(
             ['ItemDimensions.Width', 'ItemDimensions.Height']),
-                      {'ItemDimensions.Width': '650', 'ItemDimensions.Height': '130'})
+                      {'ItemDimensions.Width': '469', 'ItemDimensions.Height': '40'})
         assert_true(len(product.browse_nodes) > 0)
         assert_true(product.price_and_currency[0] is not None)
         assert_true(product.price_and_currency[1] is not None)
@@ -302,8 +302,17 @@ class TestAmazonApi(TestCase):
     def test_kwargs(self):
         amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, MaxQPS=0.7)
 
+    def test_images(self):
+        """Test images property
 
-class TestAmazonCart(TestCase):
+        Test that the images property has a value when using the Images ResponseGroup
+        """
+        product = self.amazon.lookup(ResponseGroup='Images', ItemId='B00TSVVNQC')
+        assert_equals(type(product.images), list)
+        assert_equals(len(product.images), 7)
+
+
+class TestAmazonCart(unittest.TestCase):
     def setUp(self):
         self.amazon = AmazonAPI(
             AMAZON_ACCESS_KEY,
@@ -415,3 +424,6 @@ class TestAmazonCart(TestCase):
         item = {'cart_item_id': cart_item_id, 'quantity': 0}
         new_cart = self.amazon.cart_modify(item, cart.cart_id, cart.hmac)
         self.assertRaises(KeyError, new_cart.__getitem__, cart_item_id)
+
+if __name__ == '__main__':
+    unittest.main()
