@@ -1,6 +1,6 @@
-Amazon Simple Product API 
+Amazon Simple Product API
 ==========================
-A simple Python wrapper for the Amazon.com Product Advertising API. 
+A simple Python wrapper for the Amazon.com Product Advertising API.
 [![Build Status](https://secure.travis-ci.org/yoavaviram/python-amazon-simple-product-api.png?branch=master)](http://travis-ci.org/yoavaviram/python-amazon-simple-product-api)
 
 
@@ -56,7 +56,7 @@ Lookup on amazon.de instead of amazon.com by setting the region:
      >>> region_options = bottlenose.api.SERVICE_DOMAINS.keys()
      >>> region_options
      ['US', 'FR', 'CN', 'UK', 'IN', 'CA', 'DE', 'JP', 'IT', 'ES']
-     >>> amazon_de = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, Region="DE")
+     >>> amazon_de = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, region="DE")
      >>> product = amazon_de.lookup(ItemId='B0051QVF7A')
      >>> product.title
      u'Kindle, WLAN, 15 cm (6 Zoll) E Ink Display, deutsches Men\xfc'
@@ -144,4 +144,3 @@ License
 Copyright &copy; 2012 Yoav Aviram
 
 See LICENSE for details.
-
