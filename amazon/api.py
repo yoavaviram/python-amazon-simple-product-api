@@ -1154,6 +1154,21 @@ class AmazonProduct(LXMLWrapper):
 
         return [AmazonBrowseNode(child) for child in root.iterchildren()]
 
+    @property
+    def images(self):
+        """List of images for a response.
+
+        When using lookup with RespnoseGroup 'Images', you'll get a list of images.
+        Parse them so they are returned in an easily used list format.
+        :return:
+            A list of `ObjectifiedElement` images
+        """
+        try:
+            images = [image for image in self._safe_get_element('ImageSets.ImageSet')]
+        except TypeError:  # No images in this ResponseGroup
+            images = []
+        return images
+
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart. Allows iterating over Items in the cart.
