@@ -1,4 +1,4 @@
-from unittest import TestCase
+import unittest
 
 from nose.tools import assert_equals, assert_true, assert_false
 
@@ -26,11 +26,13 @@ PRODUCT_ATTRIBUTES = [
 ]
 
 CART_ATTRIBUTES = [
-    'cart_id', 'purchase_url', 'amount', 'formatted_price', 'currency_code', 'url_encoded_hmac', 'hmac'
+    'cart_id', 'purchase_url', 'amount', 'formatted_price', 'currency_code',
+    'url_encoded_hmac', 'hmac'
 ]
 
 CART_ITEM_ATTRIBUTES = [
-    'cart_item_id', 'asin', 'title', 'amount', 'formatted_price', 'currency_code', 'quantity', 'product_group',
+    'cart_item_id', 'asin', 'title', 'amount', 'formatted_price',
+    'currency_code', 'quantity', 'product_group',
 ]
 
 CACHE = {}
@@ -49,7 +51,7 @@ def cache_clear():
     CACHE = {}
 
 
-class TestAmazonApi(TestCase):
+class TestAmazonApi(unittest.TestCase):
     """Test Amazon API
 
     Test Class for Amazon simple API wrapper.
@@ -81,12 +83,12 @@ class TestAmazonApi(TestCase):
         Tests that a product lookup for a kindle returns results and that the
         main methods are working.
         """
-        product = self.amazon.lookup(ItemId="B007HCCNJU")
+        product = self.amazon.lookup(ItemId="B00I15SB16")
         assert_true('Kindle' in product.title)
-        assert_equals(product.ean, '0814916017775')
+        assert_equals(product.ean, '0848719039726')
         assert_equals(
             product.large_image_url,
-            'http://ecx.images-amazon.com/images/I/41VZlVs8agL.jpg'
+            'http://ecx.images-amazon.com/images/I/51XGerXeYeL.jpg'
         )
         assert_equals(
             product.get_attribute('Publisher'),
@@ -94,7 +96,7 @@ class TestAmazonApi(TestCase):
         )
         assert_equals(product.get_attributes(
             ['ItemDimensions.Width', 'ItemDimensions.Height']),
-                      {'ItemDimensions.Width': '650', 'ItemDimensions.Height': '130'})
+            {'ItemDimensions.Width': '469', 'ItemDimensions.Height': '40'})
         assert_true(len(product.browse_nodes) > 0)
         assert_true(product.price_and_currency[0] is not None)
         assert_true(product.price_and_currency[1] is not None)
@@ -292,18 +294,32 @@ class TestAmazonApi(TestCase):
         assert_equals(amazon.region, 'US')
 
         # old 'region' parameter
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, region='UK')
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
+                           AMAZON_ASSOC_TAG, region='UK')
         assert_equals(amazon.region, 'UK')
 
         # kwargs method
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, Region='UK')
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
+                           AMAZON_ASSOC_TAG, Region='UK')
         assert_equals(amazon.region, 'UK')
 
     def test_kwargs(self):
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG, MaxQPS=0.7)
+        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
+                           AMAZON_ASSOC_TAG, MaxQPS=0.7)
+
+    def test_images(self):
+        """Test images property
+
+        Test that the images property has a value when using the
+        Images ResponseGroup
+        """
+        product = self.amazon.lookup(ResponseGroup='Images',
+                                     ItemId='B00TSVVNQC')
+        assert_equals(type(product.images), list)
+        assert_equals(len(product.images), 7)
 
 
-class TestAmazonCart(TestCase):
+class TestAmazonCart(unittest.TestCase):
     def setUp(self):
         self.amazon = AmazonAPI(
             AMAZON_ACCESS_KEY,
@@ -316,14 +332,17 @@ class TestAmazonCart(TestCase):
 
     def test_cart_clear_required_params(self):
         self.assertRaises(CartException, self.amazon.cart_clear, None, None)
-        self.assertRaises(CartException, self.amazon.cart_clear, 'NotNone', None)
-        self.assertRaises(CartException, self.amazon.cart_clear, None, 'NotNone')
+        self.assertRaises(CartException, self.amazon.cart_clear, 'NotNone',
+                          None)
+        self.assertRaises(CartException, self.amazon.cart_clear, None,
+                          'NotNone')
 
     def build_cart_object(self):
         product = self.amazon.lookup(ItemId="B0016J8AOC")
         return self.amazon.cart_create(
             {
-                'offer_id': product._safe_get_element('Offers.Offer.OfferListing.OfferListingId'),
+                'offer_id': product._safe_get_element(
+                    'Offers.Offer.OfferListing.OfferListingId'),
                 'quantity': 1
             }
         )
@@ -339,11 +358,13 @@ class TestAmazonCart(TestCase):
 
         cart = self.amazon.cart_create([
             {
-                'offer_id': product1._safe_get_element('Offers.Offer.OfferListing.OfferListingId'),
+                'offer_id': product1._safe_get_element(
+                    'Offers.Offer.OfferListing.OfferListingId'),
                 'quantity': 1
             },
             {
-                'offer_id': product2._safe_get_element('Offers.Offer.OfferListing.OfferListingId'),
+                'offer_id': product2._safe_get_element(
+                    'Offers.Offer.OfferListing.OfferListingId'),
                 'quantity': 1
             },
         ])
@@ -358,9 +379,11 @@ class TestAmazonCart(TestCase):
 
     def test_cart_clear_wrong_hmac(self):
         cart = self.build_cart_object()
-        # never use urlencoded hmac, as library encodes as well. Just in case hmac = url_encoded_hmac we add some noise
+        # never use urlencoded hmac, as library encodes as well. Just in case
+        # hmac = url_encoded_hmac we add some noise
         hmac = cart.url_encoded_hmac + '%3d'
-        self.assertRaises(CartInfoMismatchException, self.amazon.cart_clear, cart.cart_id, hmac)
+        self.assertRaises(CartInfoMismatchException, self.amazon.cart_clear,
+                          cart.cart_id, hmac)
 
     def test_cart_attributes(self):
         cart = self.build_cart_object()
@@ -374,7 +397,8 @@ class TestAmazonCart(TestCase):
                 getattr(item, attribute)
 
     def test_cart_get(self):
-        # We need to flush the cache here so we will get a new cart that has not been used in test_cart_clear
+        # We need to flush the cache here so we will get a new cart that has
+        # not been used in test_cart_clear
         cache_clear()
         cart = self.build_cart_object()
         fetched_cart = self.amazon.cart_get(cart.cart_id, cart.hmac)
@@ -383,16 +407,19 @@ class TestAmazonCart(TestCase):
         assert_equals(len(fetched_cart), len(cart))
 
     def test_cart_get_wrong_hmac(self):
-        # We need to flush the cache here so we will get a new cart that has not been used in test_cart_clear
+        # We need to flush the cache here so we will get a new cart that has
+        # not been used in test_cart_clear
         cache_clear()
         cart = self.build_cart_object()
-        self.assertRaises(CartInfoMismatchException, self.amazon.cart_get, cart.cart_id, cart.hmac + '%3d')
+        self.assertRaises(CartInfoMismatchException, self.amazon.cart_get,
+                          cart.cart_id, cart.hmac + '%3d')
 
     def test_cart_add(self):
         cart = self.build_cart_object()
         product = self.amazon.lookup(ItemId="B007HCCNJU")
         item = {
-            'offer_id': product._safe_get_element('Offers.Offer.OfferListing.OfferListingId'),
+            'offer_id': product._safe_get_element(
+                'Offers.Offer.OfferListing.OfferListingId'),
             'quantity': 1
         }
         new_cart = self.amazon.cart_add(item, cart.cart_id, cart.hmac)
@@ -415,3 +442,6 @@ class TestAmazonCart(TestCase):
         item = {'cart_item_id': cart_item_id, 'quantity': 0}
         new_cart = self.amazon.cart_modify(item, cart.cart_id, cart.hmac)
         self.assertRaises(KeyError, new_cart.__getitem__, cart_item_id)
+
+if __name__ == '__main__':
+    unittest.main()

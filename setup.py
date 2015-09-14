@@ -1,11 +1,10 @@
+import amazon
+
 from setuptools import setup, find_packages
 
 
-version = '2.0.0'
-
-
 setup(name='python-amazon-simple-product-api',
-      version=version,
+      version=amazon.__version__,
       description="A simple Python wrapper for the Amazon.com Product Advertising API",
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[

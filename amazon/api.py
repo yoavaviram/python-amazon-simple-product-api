@@ -260,9 +260,11 @@ class AmazonAPI(object):
     def cart_create(self, items, **kwargs):
         """CartCreate.
         :param items:
-            A dictionary containing the items to be added to the cart. Or a list containing these dictionaries
+            A dictionary containing the items to be added to the cart.
+            Or a list containing these dictionaries.
             It is not possible to create an empty cart!
-            example: [{'offer_id': 'rt2ofih3f389nwiuhf8934z87o3f4h', 'quantity': 1}]
+            example: [{'offer_id': 'rt2ofih3f389nwiuhf8934z87o3f4h',
+            'quantity': 1}]
 
         :return:
             An :class:`~.AmazonCart`.
@@ -291,9 +293,11 @@ class AmazonAPI(object):
     def cart_add(self, items, CartId=None, HMAC=None, **kwargs):
         """CartAdd.
         :param items:
-            A dictionary containing the items to be added to the cart. Or a list containing these dictionaries
+            A dictionary containing the items to be added to the cart.
+            Or a list containing these dictionaries.
             It is not possible to create an empty cart!
-            example: [{'offer_id': 'rt2ofih3f389nwiuhf8934z87o3f4h', 'quantity': 1}]
+            example: [{'offer_id': 'rt2ofih3f389nwiuhf8934z87o3f4h',
+            'quantity': 1}]
         :param CartId: Id of Cart
         :param HMAC: HMAC of Cart, see CartCreate for more info
         :return:
@@ -360,8 +364,10 @@ class AmazonAPI(object):
     def cart_modify(self, items, CartId=None, HMAC=None, **kwargs):
         """CartAdd.
         :param items:
-            A dictionary containing the items to be added to the cart. Or a list containing these dictionaries
-            example: [{'cart_item_id': 'rt2ofih3f389nwiuhf8934z87o3f4h', 'quantity': 1}]
+            A dictionary containing the items to be added to the cart.
+            Or a list containing these dictionaries.
+            example: [{'cart_item_id': 'rt2ofih3f389nwiuhf8934z87o3f4h',
+            'quantity': 1}]
         :param CartId: Id of Cart
         :param HMAC: HMAC of Cart, see CartCreate for more info
         :return:
@@ -395,11 +401,13 @@ class AmazonAPI(object):
 
     def _check_for_cart_error(self, cart):
         if cart._safe_get_element('Cart.Request.Errors') is not None:
-            error = cart._safe_get_element('Cart.Request.Errors.Error.Code').text
+            error = cart._safe_get_element(
+                'Cart.Request.Errors.Error.Code').text
             if error == 'AWS.ECommerceService.CartInfoMismatch':
                 raise CartInfoMismatchException(
-                    'CartGet failed: AWS.ECommerceService.CartInfoMismatch make sure '
-                    'AssociateTag, CartId and HMAC are correct (dont use URLEncodedHMAC!!!)'
+                    'CartGet failed: AWS.ECommerceService.CartInfoMismatch '
+                    'make sure AssociateTag, CartId and HMAC are correct '
+                    '(dont use URLEncodedHMAC!!!)'
                 )
             raise CartException('CartGet failed: ' + error)
 
@@ -670,7 +678,8 @@ class AmazonProduct(LXMLWrapper):
                 currency = self._safe_get_element_text(
                     'OfferSummary.LowestNewPrice.CurrencyCode')
         if price:
-            return float(price) / 100, currency
+            fprice = float(price) / 100 if 'JP' not in self.region else price
+            return fprice, currency
         else:
             return None, None
 
@@ -751,7 +760,8 @@ class AmazonProduct(LXMLWrapper):
         creators = self._safe_get_element('ItemAttributes.Creator')
         if creators is not None:
             for creator in creators:
-                role = creator.attrib['Role'] if 'Role' in creator.attrib else None
+                role = creator.attrib['Role'] if \
+                    'Role' in creator.attrib else None
                 result.append((creator.text, role))
         return result
 
@@ -1155,6 +1165,22 @@ class AmazonProduct(LXMLWrapper):
         return [AmazonBrowseNode(child) for child in root.iterchildren()]
 
     @property
+    def images(self):
+        """List of images for a response.
+        When using lookup with RespnoseGroup 'Images', you'll get a
+        list of images. Parse them so they are returned in an easily
+        used list format.
+        :return:
+            A list of `ObjectifiedElement` images
+        """
+        try:
+            images = [image for image in self._safe_get_element(
+                'ImageSets.ImageSet')]
+        except TypeError:  # No images in this ResponseGroup
+            images = []
+        return images
+
+    @property
     def genre(self):
         """Movie Genre.
 
@@ -1191,7 +1217,8 @@ class AmazonProduct(LXMLWrapper):
 
 
 class AmazonCart(LXMLWrapper):
-    """Wrapper around Amazon shopping cart. Allows iterating over Items in the cart.
+    """Wrapper around Amazon shopping cart.
+       Allows iterating over Items in the cart.
     """
 
     @property
