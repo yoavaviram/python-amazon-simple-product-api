@@ -3,8 +3,8 @@
 """
 Python Amazon Simple Product Api
 ~~~~~~~
-Google Spreadsheets client library.
+Amazon Product Advertising API Client library.
 """
 
 __version__ = '2.0.1'
-__author__ = 'Anton Burnashev'
+__author__ = 'Yoav Aviram'
