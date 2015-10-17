@@ -123,8 +123,7 @@ class AmazonAPI(object):
             You generally want to set this a little lower than the
             max (so 0.9, not 1.0).
             Amazon limits the number of calls per hour, so for long running
-            tasks this should be set to 0.9 to ensure you don't hit the
-            maximum.
+            tasks this should be set to 0.9 to ensure you don't hit the maximum.
             Defaults to None (unlimited).
         :param Timeout:
             Optional timeout for queries.
@@ -1174,7 +1173,6 @@ class AmazonProduct(LXMLWrapper):
     @property
     def images(self):
         """List of images for a response.
-
         When using lookup with RespnoseGroup 'Images', you'll get a
         list of images. Parse them so they are returned in an easily
         used list format.
@@ -1188,6 +1186,41 @@ class AmazonProduct(LXMLWrapper):
         except TypeError:  # No images in this ResponseGroup
             images = []
         return images
+
+    @property
+    def genre(self):
+        """Movie Genre.
+
+        :return:
+            The genre of a movie.
+        """
+        return self._safe_get_element_text('ItemAttributes.Genre')
+
+    @property
+    def actors(self):
+        """Movie Actors.
+
+        :return:
+            A list of actors names.
+        """
+        result = []
+        actors = self._safe_get_element('ItemAttributes.Actor') or []
+        for actor in actors:
+            result.append(actor.text)
+        return result
+
+    @property
+    def directors(self):
+        """Movie Directors.
+
+        :return:
+            A list of directors for a movie.
+        """
+        result = []
+        directors = self._safe_get_element('ItemAttributes.Director') or []
+        for director in directors:
+            result.append(director.text)
+        return result
 
 
 class AmazonCart(LXMLWrapper):
