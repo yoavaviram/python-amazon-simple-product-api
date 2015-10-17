@@ -5,3 +5,6 @@ build/
 dist/
 .idea
 test_settings.py
+_build
+_static
+_templates
