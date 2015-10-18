@@ -2,6 +2,7 @@ Amazon Simple Product API
 ==========================
 A simple Python wrapper for the Amazon.com Product Advertising API.
 [![Build Status](https://secure.travis-ci.org/yoavaviram/python-amazon-simple-product-api.png?branch=master)](http://travis-ci.org/yoavaviram/python-amazon-simple-product-api)
+[![Documentation Status](https://readthedocs.org/projects/python-amazon-simple-product-api/badge/?version=latest)](http://python-amazon-simple-product-api.readthedocs.org/en/latest/?badge=latest)
 
 
 Features
