@@ -123,7 +123,8 @@ class AmazonAPI(object):
             You generally want to set this a little lower than the
             max (so 0.9, not 1.0).
             Amazon limits the number of calls per hour, so for long running
-            tasks this should be set to 0.9 to ensure you don't hit the maximum.
+            tasks this should be set to 0.9 to ensure you don't hit the
+            maximum.
             Defaults to None (unlimited).
         :param Timeout:
             Optional timeout for queries.
@@ -717,7 +718,7 @@ class AmazonProduct(LXMLWrapper):
     def author(self):
         """Author.
         Depricated, please use `authors`.
-        
+
         :return:
             Author (string).
         """
@@ -905,7 +906,7 @@ class AmazonProduct(LXMLWrapper):
         """Customer Reviews.
 
         Get a iframe URL for customer reviews.
-        
+
         :return:
             A tuple of: has_reviews (bool), reviews url (string)
         """
@@ -1041,7 +1042,7 @@ class AmazonProduct(LXMLWrapper):
         """Languages.
 
         Returns a set of languages in lower-case.
-        
+
         :return:
             Returns a set of languages in lower-case (strings).
         """
@@ -1059,7 +1060,7 @@ class AmazonProduct(LXMLWrapper):
         """Features.
 
         Returns a list of feature descriptions.
-        
+
         :return:
             Returns a list of 'ItemAttributes.Feature' elements (strings).
         """
@@ -1102,10 +1103,10 @@ class AmazonProduct(LXMLWrapper):
 
     def get_attribute_details(self, name):
         """Get Attribute Details
-        
+
         Gets XML attributes of the product attribute. These usually contain
         details about the product attributes such as units.
-        
+
         :param name:
             Attribute name (string)
         :return:
@@ -1135,7 +1136,7 @@ class AmazonProduct(LXMLWrapper):
         """Parent ASIN.
 
         Can be used to test if product has a parent.
-        
+
         :return:
             Parent ASIN if product has a parent.
         """
@@ -1146,7 +1147,7 @@ class AmazonProduct(LXMLWrapper):
 
         Fetch parent product if it exists.
         Use `parent_asin` to check if a parent exist before fetching.
-        
+
         :return:
             An instance of :class:`~.AmazonProduct` representing the
             parent product.
@@ -1176,7 +1177,7 @@ class AmazonProduct(LXMLWrapper):
         When using lookup with RespnoseGroup 'Images', you'll get a
         list of images. Parse them so they are returned in an easily
         used list format.
-        
+
         :return:
             A list of `ObjectifiedElement` images
         """
