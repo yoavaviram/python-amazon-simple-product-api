@@ -8,4 +8,4 @@ install:
   - pip install -r test-requirements.txt --use-mirrors
 script: 
   - "pep8 --ignore=E501,E225,E128 amazon"
-  - "sphinx-build -nW -b html -d _build/doctrees . _build/html"
+  - "sphinx-build -b html -d _build/doctrees . _build/html"
