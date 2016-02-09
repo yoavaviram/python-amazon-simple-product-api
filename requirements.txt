@@ -1,3 +1,4 @@
 lxml
 bottlenose
 python-dateutil
+nose

@@ -1,4 +1,5 @@
 import unittest
+import mock
 
 from nose.tools import assert_equals, assert_true, assert_false
 
@@ -7,6 +8,7 @@ from amazon.api import (AmazonAPI,
                         CartException,
                         CartInfoMismatchException,
                         SearchException,
+                        AmazonSearch,
                         AsinNotFound)
 from test_settings import (AMAZON_ACCESS_KEY,
                            AMAZON_SECRET_KEY,
@@ -158,6 +160,31 @@ class TestAmazonApi(unittest.TestCase):
         products = self.amazon.search(Title='HarryPotter',
                                       SearchIndex='Automotive')
         self.assertRaises(SearchException, (x for x in products).next)
+
+    @mock.patch('amazon.api.objectify')
+    def test_search_throttled(self, lxml):
+        """Test handling of a search throttled by Amazon.
+
+        Tests that a product search that triggers throttling by Amazon:
+        http://docs.aws.amazon.com/AWSECommerceService/latest/DG/ErrorNumbers.html
+        """
+
+        lxml.return_value = {
+            "Items": {
+                "Request": {
+                    "Errors": {
+                        "Error": {
+                            "Code": "AWS.ParameterOutOfRange",
+                            "Message": "Request has been throttled"
+                        }
+                    }
+                }
+            }
+        }
+
+        AmazonSearch._query()
+
+
 
     def test_amazon_api_defaults_to_US(self):
         """Test Amazon API defaults to the US store."""
