@@ -685,6 +685,15 @@ class AmazonProduct(LXMLWrapper):
             return None, None
 
     @property
+    def offer_id(self):
+        """Offer ID
+        
+        :return:
+            Offer ID (string).
+        """
+        return self._safe_get_element('Offers.Offer.OfferListing.OfferListingId')
+
+    @property
     def asin(self):
         """ASIN (Amazon ID)
 
