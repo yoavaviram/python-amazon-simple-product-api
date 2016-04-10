@@ -1271,6 +1271,15 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text('ItemAttributes.RunningTime')
 
+    @property
+    def studio(self):
+        """Studio.
+
+        :return:
+            Studio (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Studio')
+
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
