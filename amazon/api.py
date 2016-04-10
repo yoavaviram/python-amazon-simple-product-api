@@ -504,6 +504,7 @@ class AmazonSearch(object):
         """
         self.kwargs = kwargs
         self.current_page = 1
+        self.is_last_page = False
         self.api = api
         self.aws_associate_tag = aws_associate_tag
 
@@ -531,7 +532,7 @@ class AmazonSearch(object):
             Yields lxml root elements.
         """
         try:
-            while True:
+            while not self.is_last_page:
                 yield self._query(ItemPage=self.current_page, **self.kwargs)
                 self.current_page += 1
         except NoMorePages:
@@ -556,6 +557,8 @@ class AmazonSearch(object):
             else:
                 raise SearchException(
                     "Amazon Search Error: '{0}', '{1}'".format(code, msg))
+        if (hasattr(root.Items, 'TotalPages') and (root.Items.TotalPages == self.current_page)):
+            self.is_last_page = True
         return root
 
 
