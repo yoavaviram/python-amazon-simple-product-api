@@ -1262,6 +1262,16 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text('OfferSummary.LowestNewPrice.FormattedPrice')
 
+    @property
+    def running_time(self):
+        """RunningTime.
+
+        :return:
+            RunningTime (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.RunningTime')
+
+
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
        Allows iterating over Items in the cart.
