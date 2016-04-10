@@ -1235,6 +1235,15 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text('ItemAttributes.IsAdultProduct')
 
+    @property
+    def product_group(self):
+        """ProductGroup.
+
+        :return:
+            ProductGroup (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.ProductGroup')
+
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
