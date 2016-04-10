@@ -1253,6 +1253,14 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text('ItemAttributes.ProductTypeName')
 
+    @property
+    def formatted_price(self):
+        """FormattedPrice.
+
+        :return:
+            FormattedPrice (string)
+        """
+        return self._safe_get_element_text('OfferSummary.LowestNewPrice.FormattedPrice')
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
