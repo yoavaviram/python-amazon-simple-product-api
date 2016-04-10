@@ -1289,6 +1289,15 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.IsPreorder')
 
+    @property
+    def detail_page_url(self):
+        """DetailPageURL.
+
+        :return:
+            DetailPageURL (string)
+        """
+        return self._safe_get_element_text('DetailPageURL')
+
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
