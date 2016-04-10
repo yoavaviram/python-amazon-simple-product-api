@@ -1244,6 +1244,15 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text('ItemAttributes.ProductGroup')
 
+    @property
+    def product_type_name(self):
+        """ProductTypeName.
+
+        :return:
+            ProductTypeName (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.ProductTypeName')
+
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
