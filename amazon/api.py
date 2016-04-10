@@ -1226,6 +1226,15 @@ class AmazonProduct(LXMLWrapper):
             result.append(director.text)
         return result
 
+    @property
+    def is_adult(self):
+        """IsAdultProduct.
+
+        :return:
+            IsAdultProduct (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.IsAdultProduct')
+
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
