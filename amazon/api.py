@@ -1280,6 +1280,15 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text('ItemAttributes.Studio')
 
+    @property
+    def is_preorder(self):
+        """IsPreorder (Is Preorder)
+
+        :return:
+            IsPreorder (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.IsPreorder')
+
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
