@@ -196,6 +196,26 @@ class AmazonAPI(object):
                 region=self.region
             )
 
+    def lookup_bulk(self, ResponseGroup="Large", **kwargs):
+        """Lookup Amazon Products in bulk.
+
+        Returns all products matching requested ASINs, ignoring invalid entries.
+
+        :return:
+            A list of  :class:`~.AmazonProduct` instances.
+        """
+        response = self.api.ItemLookup(ResponseGroup=ResponseGroup, **kwargs)
+        root = objectify.fromstring(response)
+        if not hasattr(root.Items, 'Item'):
+            return []
+        return list(
+            AmazonProduct(
+                item,
+                self.aws_associate_tag,
+                self,
+                region=self.region) for item in root.Items.Item
+        )
+
     def similarity_lookup(self, ResponseGroup="Large", **kwargs):
         """Similarty Lookup.
 
