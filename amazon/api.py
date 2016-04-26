@@ -80,6 +80,13 @@ class NoMorePages(SearchException):
     pass
 
 
+class RequestThrottled(AmazonException):
+    """Exception for when Amazon has throttled a request, per:
+    http://docs.aws.amazon.com/AWSECommerceService/latest/DG/ErrorNumbers.html
+    """
+    pass
+
+
 class SimilartyLookupException(AmazonException):
     """Similarty Lookup Exception.
     """
@@ -553,6 +560,9 @@ class AmazonSearch(object):
             msg = root.Items.Request.Errors.Error.Message
             if code == 'AWS.ParameterOutOfRange':
                 raise NoMorePages(msg)
+            elif code == 'HTTP Error 503':
+                raise RequestThrottled(
+                    "Request Throttled Error: '{0}', '{1}'".format(code, msg))
             else:
                 raise SearchException(
                     "Amazon Search Error: '{0}', '{1}'".format(code, msg))
