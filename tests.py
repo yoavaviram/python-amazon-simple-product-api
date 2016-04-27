@@ -1,7 +1,7 @@
 import unittest
 import mock
 
-from nose.tools import assert_equals, assert_true, assert_false
+from nose.tools import assert_equals, assert_true, assert_false, assert_raises
 
 import datetime
 from amazon.api import (AmazonAPI,
@@ -15,7 +15,7 @@ from test_settings import (AMAZON_ACCESS_KEY,
                            AMAZON_ASSOC_TAG)
 
 
-TEST_ASIN = "B007HCCNJU"
+TEST_ASIN = "0312098286"
 
 PRODUCT_ATTRIBUTES = [
     'asin', 'author', 'binding', 'brand', 'browse_nodes', 'ean', 'edition',
@@ -110,14 +110,14 @@ class TestAmazonApi(unittest.TestCase):
 
         Tests that a product lookup for a nonexistent ASIN raises AsinNotFound.
         """
-        self.assertRaises(AsinNotFound, self.amazon.lookup, ItemId="ABCD1234")
+        assert_raises(AsinNotFound, self.amazon.lookup, ItemId="ABCD1234")
 
     def test_batch_lookup(self):
         """Test Batch Product Lookup.
 
         Tests that a batch product lookup request returns multiple results.
         """
-        asins = ['B007HCCNJU', 'B00BWYQ9YE',
+        asins = [TEST_ASIN, 'B00BWYQ9YE',
                  'B00BWYRF7E', 'B00D2KJDXA']
         products = self.amazon.lookup(ItemId=','.join(asins))
         assert_equals(len(products), len(asins))
@@ -157,34 +157,9 @@ class TestAmazonApi(unittest.TestCase):
         Tests that a product search with that returns no results throws a
         SearchException.
         """
-        products = self.amazon.search(Title='HarryPotter',
+        products = self.amazon.search(Title='no-such-thing-on-amazon',
                                       SearchIndex='Automotive')
-        self.assertRaises(SearchException, (x for x in products).next)
-
-    @mock.patch('amazon.api.objectify')
-    def test_search_throttled(self, lxml):
-        """Test handling of a search throttled by Amazon.
-
-        Tests that a product search that triggers throttling by Amazon:
-        http://docs.aws.amazon.com/AWSECommerceService/latest/DG/ErrorNumbers.html
-        """
-
-        lxml.return_value = {
-            "Items": {
-                "Request": {
-                    "Errors": {
-                        "Error": {
-                            "Code": "AWS.ParameterOutOfRange",
-                            "Message": "Request has been throttled"
-                        }
-                    }
-                }
-            }
-        }
-
-        AmazonSearch._query()
-
-
+        assert_raises(SearchException, (x for x in products).next)
 
     def test_amazon_api_defaults_to_US(self):
         """Test Amazon API defaults to the US store."""
@@ -261,7 +236,7 @@ class TestAmazonApi(unittest.TestCase):
         product = self.amazon.lookup(ItemId="B00005NZJA")
         creators = dict(product.creators)
         assert_equals(creators[u"Jonathan Davis"], u"Narrator")
-        assert_equals(len(creators.values()), 1)
+        assert_equals(len(creators.values()), 2)
 
     def test_multiple_creators(self):
         """Test a product with multiple creators
@@ -358,18 +333,17 @@ class TestAmazonCart(unittest.TestCase):
         )
 
     def test_cart_clear_required_params(self):
-        self.assertRaises(CartException, self.amazon.cart_clear, None, None)
-        self.assertRaises(CartException, self.amazon.cart_clear, 'NotNone',
-                          None)
-        self.assertRaises(CartException, self.amazon.cart_clear, None,
-                          'NotNone')
+        assert_raises(CartException, self.amazon.cart_clear, None, None)
+        assert_raises(CartException, self.amazon.cart_clear, 'NotNone',
+                      None)
+        assert_raises(CartException, self.amazon.cart_clear, None,
+                      NotNone')
 
     def build_cart_object(self):
         product = self.amazon.lookup(ItemId="B0016J8AOC")
         return self.amazon.cart_create(
             {
-                'offer_id': product._safe_get_element(
-                    'Offers.Offer.OfferListing.OfferListingId'),
+                'offer_id': product.offer_id,
                 'quantity': 1
             }
         )
@@ -380,7 +354,7 @@ class TestAmazonCart(unittest.TestCase):
 
     def test_cart_create_multiple_item(self):
         product1 = self.amazon.lookup(ItemId="B0016J8AOC")
-        product2 = self.amazon.lookup(ItemId="B007HCCNJU")
+        product2 = self.amazon.lookup(ItemId=TEST_ASIN)
         asins = [product1.asin, product2.asin]
 
         cart = self.amazon.cart_create([
@@ -409,8 +383,8 @@ class TestAmazonCart(unittest.TestCase):
         # never use urlencoded hmac, as library encodes as well. Just in case
         # hmac = url_encoded_hmac we add some noise
         hmac = cart.url_encoded_hmac + '%3d'
-        self.assertRaises(CartInfoMismatchException, self.amazon.cart_clear,
-                          cart.cart_id, hmac)
+        assert_raises(CartInfoMismatchException, self.amazon.cart_clear,
+                      cart.cart_id, hmac)
 
     def test_cart_attributes(self):
         cart = self.build_cart_object()
@@ -438,12 +412,12 @@ class TestAmazonCart(unittest.TestCase):
         # not been used in test_cart_clear
         cache_clear()
         cart = self.build_cart_object()
-        self.assertRaises(CartInfoMismatchException, self.amazon.cart_get,
-                          cart.cart_id, cart.hmac + '%3d')
+        assert_raises(CartInfoMismatchException, self.amazon.cart_get,
+                      cart.cart_id, cart.hmac + '%3d')
 
     def test_cart_add(self):
         cart = self.build_cart_object()
-        product = self.amazon.lookup(ItemId="B007HCCNJU")
+        product = self.amazon.lookup(ItemId=TEST_ASIN)
         item = {
             'offer_id': product._safe_get_element(
                 'Offers.Offer.OfferListing.OfferListingId'),
@@ -468,7 +442,7 @@ class TestAmazonCart(unittest.TestCase):
             cart_item_id = item.cart_item_id
         item = {'cart_item_id': cart_item_id, 'quantity': 0}
         new_cart = self.amazon.cart_modify(item, cart.cart_id, cart.hmac)
-        self.assertRaises(KeyError, new_cart.__getitem__, cart_item_id)
+        assert_raises(KeyError, new_cart.__getitem__, cart_item_id)
 
 if __name__ == '__main__':
     unittest.main()

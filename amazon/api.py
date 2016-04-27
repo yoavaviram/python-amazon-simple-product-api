@@ -199,7 +199,8 @@ class AmazonAPI(object):
     def lookup_bulk(self, ResponseGroup="Large", **kwargs):
         """Lookup Amazon Products in bulk.
 
-        Returns all products matching requested ASINs, ignoring invalid entries.
+        Returns all products matching requested ASINs, ignoring invalid
+        entries.
 
         :return:
             A list of  :class:`~.AmazonProduct` instances.
@@ -340,14 +341,12 @@ class AmazonAPI(object):
         if len(items) > 10:
             raise CartException("You can't add more than 10 items at once")
 
-        offer_id_key_template = 'Item.%s.OfferListingId'
-        quantity_key_template = 'Item.%s.Quantity'
-        i = 0
+        offer_id_key_template = 'Item.{0}.OfferListingId'
+        quantity_key_template = 'Item.{0}.Quantity'
 
-        for item in items:
-            i += 1
-            kwargs[offer_id_key_template % (i, )] = item['offer_id']
-            kwargs[quantity_key_template % (i, )] = item['quantity']
+        for i, item in enumerate(items):
+            kwargs[offer_id_key_template.format(i)] = item['offer_id']
+            kwargs[quantity_key_template.format(i)] = item['quantity']
 
         response = self.api.CartAdd(CartId=CartId, HMAC=HMAC, **kwargs)
         root = objectify.fromstring(response)
@@ -717,11 +716,12 @@ class AmazonProduct(LXMLWrapper):
     @property
     def offer_id(self):
         """Offer ID
-        
+
         :return:
             Offer ID (string).
         """
-        return self._safe_get_element('Offers.Offer.OfferListing.OfferListingId')
+        return self._safe_get_element(
+            'Offers.Offer.OfferListing.OfferListingId')
 
     @property
     def asin(self):
