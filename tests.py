@@ -112,10 +112,10 @@ class TestAmazonApi(unittest.TestCase):
         """
         assert_raises(AsinNotFound, self.amazon.lookup, ItemId="ABCD1234")
 
-    def test_batch_lookup(self):
-        """Test Batch Product Lookup.
+    def test_bulk_lookup(self):
+        """Test Baulk Product Lookup.
 
-        Tests that a batch product lookup request returns multiple results.
+        Tests that a bulk product lookup request returns multiple results.
         """
         asins = [TEST_ASIN, 'B00BWYQ9YE',
                  'B00BWYRF7E', 'B00D2KJDXA']
@@ -123,6 +123,29 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(len(products), len(asins))
         for i, product in enumerate(products):
             assert_equals(asins[i], product.asin)
+
+    def test_lookup_bulk(self):
+        """Test Bulk Product Lookup.
+
+        Tests that a bulk product lookup request returns multiple results.
+        """
+        asins = [TEST_ASIN, 'B00BWYQ9YE',
+                 'B00BWYRF7E', 'B00D2KJDXA']
+        products = self.amazon.lookup_bulk(ItemId=','.join(asins))
+        assert_equals(len(products), len(asins))
+        for i, product in enumerate(products):
+            assert_equals(asins[i], product.asin)
+
+    def test_lookup_bulk_empty(self):
+        """Test Bulk Product Lookup With No Results.
+
+        Tests that a bulk product lookup request with no results 
+        returns an empty list.
+        """
+        asins = ['not-an-asin', 'als-not-an-asin']
+        products = self.amazon.lookup_bulk(ItemId=','.join(asins))
+        assert_equals(type(products), list)
+        assert_equals(len(products), 0)
 
     def test_search(self):
         """Test Product Search.
