@@ -68,7 +68,7 @@ Bulk lookup requests are also supported:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
-     >>> products = amazon.lookup(ItemId='B0051QVESA,B005DOK8NW,B005890G8Y,B0051VVOB2,B005890G8O')
+     >>> products = amazon.lookup(ItemId='B00KC6I06S,B005DOK8NW,B00TSUGXKE')
      >>> len(products)
      5
      >>> products[0].asin
