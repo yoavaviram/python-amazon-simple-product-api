@@ -139,7 +139,7 @@ class TestAmazonApi(unittest.TestCase):
     def test_lookup_bulk_empty(self):
         """Test Bulk Product Lookup With No Results.
 
-        Tests that a bulk product lookup request with no results 
+        Tests that a bulk product lookup request with no results
         returns an empty list.
         """
         asins = ['not-an-asin', 'als-not-an-asin']

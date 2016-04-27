@@ -64,7 +64,7 @@ Lookup on amazon.de instead of amazon.com by setting the region:
      >>> product.price_and_currency
      (99.0, 'EUR')
 
-Batch lookup requests are also supported:
+Bulk lookup requests are also supported:
 
      >>> from amazon.api import AmazonAPI
      >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
@@ -73,6 +73,8 @@ Batch lookup requests are also supported:
      5
      >>> products[0].asin
      'B0051QVESA'
+
+If you'd rather get an empty list intead of exceptions use lookup_bulk() instead.
 
 Search:
 
@@ -128,6 +130,25 @@ Browse Node Lookup:
      >>> bn.name
      'eBook Readers'
 
+Create and manipulate Carts:
+
+     >>> from amazon.api import AmazonAPI
+     >>> amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)     
+     >>> product = amazon.lookup(ItemId="B0016J8AOC")
+     >>> item = {'offer_id': product.offer_id, 'quantity': 1}
+     >>> cart = amazon.cart_create(item)
+     >>> fetched_cart = amazon.cart_get(cart.cart_id, cart.hmac)
+     >>> another_product = amazon.lookup(ItemId='0312098286')
+     >>> another_item = {'offer_id': another_product.offer_id, 'quantity': 1}
+     >>> another_cart = amazon.cart_add(another_item, cart.cart_id, cart.hmac)     
+     >>> cart_item_id = None
+     >>> for item in cart:
+     >>>     cart_item_id = item.cart_item_id
+     >>> modify_item = {'cart_item_id': cart_item_id, 'quantity': 3}
+     >>> modified_cart = amazon.cart_modify(item, cart.cart_id, cart.hmac)     
+     >>> cleared_cart = amazon.cart_clear(cart.cart_id, cart.hmac)
+
+
 For more information about these calls, please consult the [Product Advertising
 API Developer Guide](http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/index.html).
 
@@ -138,6 +159,11 @@ To run the test suite please follow these steps:
 * Make sure [Nose](http://readthedocs.org/docs/nose/en/latest/) is installed: (`pip install nose`)
 * Create a local file named: `test_settings.py` with the following variables set to the relevant values: `AMAZON_ACCESS_KEY`, `AMAZON_SECRET_KEY`, `AMAZON_ASSOC_TAG`
 * Run `nosetests`
+
+Contribution
+------------
+Contributors and committers are are welcome. Please message me.
+
 
 License
 -------
