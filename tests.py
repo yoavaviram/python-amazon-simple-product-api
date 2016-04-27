@@ -337,7 +337,7 @@ class TestAmazonCart(unittest.TestCase):
         assert_raises(CartException, self.amazon.cart_clear, 'NotNone',
                       None)
         assert_raises(CartException, self.amazon.cart_clear, None,
-                      NotNone')
+                      'NotNone')
 
     def build_cart_object(self):
         product = self.amazon.lookup(ItemId="B0016J8AOC")

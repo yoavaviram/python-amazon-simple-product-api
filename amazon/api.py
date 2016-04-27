@@ -305,14 +305,12 @@ class AmazonAPI(object):
         if len(items) > 10:
             raise CartException("You can't add more than 10 items at once")
 
-        offer_id_key_template = 'Item.%s.OfferListingId'
-        quantity_key_template = 'Item.%s.Quantity'
-        i = 0
+        offer_id_key_template = 'Item.{0}.OfferListingId'
+        quantity_key_template = 'Item.{0}.Quantity'
 
-        for item in items:
-            i += 1
-            kwargs[offer_id_key_template % (i, )] = item['offer_id']
-            kwargs[quantity_key_template % (i, )] = item['quantity']
+        for i, item in enumerate(items):
+            kwargs[offer_id_key_template.format(i)] = item['offer_id']
+            kwargs[quantity_key_template.format(i)] = item['quantity']
 
         response = self.api.CartCreate(**kwargs)
         root = objectify.fromstring(response)
@@ -409,14 +407,12 @@ class AmazonAPI(object):
         if len(items) > 10:
             raise CartException("You can't add more than 10 items at once")
 
-        cart_item_id_key_template = 'Item.%s.CartItemId'
-        quantity_key_template = 'Item.%s.Quantity'
-        i = 0
+        cart_item_id_key_template = 'Item.{0}.CartItemId'
+        quantity_key_template = 'Item.{0}.Quantity'
 
-        for item in items:
-            i += 1
-            kwargs[cart_item_id_key_template % (i, )] = item['cart_item_id']
-            kwargs[quantity_key_template % (i, )] = item['quantity']
+        for i, item in enumerate(items):
+            kwargs[cart_item_id_key_template.format(i)] = item['cart_item_id']
+            kwargs[quantity_key_template.format(i)] = item['quantity']
 
         response = self.api.CartModify(CartId=CartId, HMAC=HMAC, **kwargs)
         root = objectify.fromstring(response)
@@ -1313,7 +1309,7 @@ class AmazonCart(LXMLWrapper):
         for item in self:
             if item.cart_item_id == cart_item_id:
                 return item
-        raise KeyError('no item found with CartItemId: %s' % (cart_item_id,))
+        raise KeyError('no item found with CartItemId: {0}'.format(cart_item_id,))
 
 
 class AmazonCartItem(LXMLWrapper):
