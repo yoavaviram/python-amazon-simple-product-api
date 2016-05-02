@@ -22,7 +22,6 @@ import dateutil.parser
 
 
 # https://kdp.amazon.com/help?topicId=A1CT8LK6UW2FXJ
-# CN not listed
 DOMAINS = {
     'CA': 'ca',
     'DE': 'de',
@@ -33,6 +32,7 @@ DOMAINS = {
     'JP': 'co.jp',
     'UK': 'co.uk',
     'US': 'com',
+    'CN': 'cn'
 }
 
 AMAZON_ASSOCIATES_BASE_URL = 'http://www.amazon.{domain}/dp/'
