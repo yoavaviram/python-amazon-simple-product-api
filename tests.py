@@ -181,7 +181,7 @@ class TestAmazonApi(unittest.TestCase):
         """
         products = self.amazon.search(Title='no-such-thing-on-amazon',
                                       SearchIndex='Automotive')
-        assert_raises(SearchException, (x for x in products).next)
+        assert_raises(SearchException, next, (x for x in products))
 
     def test_amazon_api_defaults_to_US(self):
         """Test Amazon API defaults to the US store."""
