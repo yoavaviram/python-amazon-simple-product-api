@@ -1,2 +1,1 @@
-Sphinx==1.1.3 
-mock
+Sphinx==1.1.3
