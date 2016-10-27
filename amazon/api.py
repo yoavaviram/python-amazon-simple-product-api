@@ -679,8 +679,8 @@ class AmazonProduct(LXMLWrapper):
         """
 
         result = []
-        similar_products = self._safe_get_element('SimilarProducts')
-        if similar_product is not None:
+        similar_products = self._safe_get_element('SimilarProducts.SimilarProduct')
+        if similar_products is not None:
             for similar_product in similar_products:
                 result.append(similar_product.ASIN.text)
         return result
