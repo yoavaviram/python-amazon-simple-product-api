@@ -89,7 +89,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(product.ean, '0848719039726')
         assert_equals(
             product.large_image_url,
-            'http://ecx.images-amazon.com/images/I/51XGerXeYeL.jpg'
+            'https://images-na.ssl-images-amazon.com/images/I/51XGerXeYeL.jpg'
         )
         assert_equals(
             product.get_attribute('Publisher'),
@@ -284,12 +284,12 @@ class TestAmazonApi(unittest.TestCase):
 
     def test_multiple_editorial_reviews(self):
         product = self.amazon.lookup(ItemId="B000FBJCJE")
-        expected = u'Only once in a great'
+        expected = u'<b>One of <i>Time</i>'
         assert_equals(product.editorial_reviews[0][:len(expected)], expected)
         expected = u'From the opening line'
         assert_equals(product.editorial_reviews[1][:len(expected)], expected)
         # duplicate data, amazon user data is great...
-        expected = u'Only once in a great'
+        expected = u'<b>One of <i>Time</i>'
         assert_equals(product.editorial_reviews[2][:len(expected)], expected)
 
         assert_equals(len(product.editorial_reviews), 3)
