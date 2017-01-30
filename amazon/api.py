@@ -526,6 +526,7 @@ class AmazonSearch(object):
         """
         self.kwargs = kwargs
         self.current_page = 1
+        self.is_last_page = False
         self.api = api
         self.aws_associate_tag = aws_associate_tag
 
@@ -553,7 +554,7 @@ class AmazonSearch(object):
             Yields lxml root elements.
         """
         try:
-            while True:
+            while not self.is_last_page:
                 yield self._query(ItemPage=self.current_page, **self.kwargs)
                 self.current_page += 1
         except NoMorePages:
@@ -581,6 +582,8 @@ class AmazonSearch(object):
             else:
                 raise SearchException(
                     "Amazon Search Error: '{0}', '{1}'".format(code, msg))
+        if (hasattr(root.Items, 'TotalPages') and (root.Items.TotalPages == self.current_page)):
+            self.is_last_page = True
         return root
 
 
@@ -1257,6 +1260,78 @@ class AmazonProduct(LXMLWrapper):
         for director in directors:
             result.append(director.text)
         return result
+
+    @property
+    def is_adult(self):
+        """IsAdultProduct.
+
+        :return:
+            IsAdultProduct (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.IsAdultProduct')
+
+    @property
+    def product_group(self):
+        """ProductGroup.
+
+        :return:
+            ProductGroup (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.ProductGroup')
+
+    @property
+    def product_type_name(self):
+        """ProductTypeName.
+
+        :return:
+            ProductTypeName (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.ProductTypeName')
+
+    @property
+    def formatted_price(self):
+        """FormattedPrice.
+
+        :return:
+            FormattedPrice (string)
+        """
+        return self._safe_get_element_text('OfferSummary.LowestNewPrice.FormattedPrice')
+
+    @property
+    def running_time(self):
+        """RunningTime.
+
+        :return:
+            RunningTime (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.RunningTime')
+
+    @property
+    def studio(self):
+        """Studio.
+
+        :return:
+            Studio (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Studio')
+
+    @property
+    def is_preorder(self):
+        """IsPreorder (Is Preorder)
+
+        :return:
+            IsPreorder (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.IsPreorder')
+
+    @property
+    def detail_page_url(self):
+        """DetailPageURL.
+
+        :return:
+            DetailPageURL (string)
+        """
+        return self._safe_get_element_text('DetailPageURL')
 
 
 class AmazonCart(LXMLWrapper):
