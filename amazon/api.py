@@ -525,7 +525,7 @@ class AmazonSearch(object):
             An string representing an Amazon Associates tag.
         """
         self.kwargs = kwargs
-        self.current_page = 1
+        self.current_page = 0
         self.is_last_page = False
         self.api = api
         self.aws_associate_tag = aws_associate_tag
@@ -555,8 +555,8 @@ class AmazonSearch(object):
         """
         try:
             while not self.is_last_page:
-                yield self._query(ItemPage=self.current_page, **self.kwargs)
                 self.current_page += 1
+                yield self._query(ItemPage=self.current_page, **self.kwargs)
         except NoMorePages:
             pass
 

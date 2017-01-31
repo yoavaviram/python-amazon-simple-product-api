@@ -173,6 +173,19 @@ class TestAmazonApi(unittest.TestCase):
         )
         assert_equals(len(products), 1)
 
+    def test_search_iterate_pages(self):
+        products = self.amazon.search(Keywords='internet of things oreilly',
+                                      SearchIndex='Books')
+        assert_false(products.is_last_page)
+        for product in products:
+            if products.current_page < 8:
+                assert_false(products.is_last_page)
+            else:
+                assert_true(products.is_last_page)
+
+        assert_true(products.is_last_page)
+        assert_true(products.current_page == 8)
+
     def test_search_no_results(self):
         """Test Product Search with no results.
 
