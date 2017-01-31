@@ -327,6 +327,42 @@ class TestAmazonApi(unittest.TestCase):
                            AMAZON_ASSOC_TAG, Region='UK')
         assert_equals(amazon.region, 'UK')
 
+    def test_is_adult(self):
+        product = self.amazon.lookup(ItemId="B01E7P9LEE")
+        assert_true(product.is_adult is not None)
+
+    def test_product_group(self):
+        product = self.amazon.lookup(ItemId="B01LXM0S25")
+        assert_equals(product.product_group, 'DVD')
+
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        assert_equals(product.product_group, 'Digital Music Album')
+
+    def test_product_type_name(self):
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        assert_equals(product.product_type_name, 'DOWNLOADABLE_MUSIC_ALBUM')
+
+    def test_formatted_price(self):
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        assert_equals(product.formatted_price, '$12.49')
+
+    def test_running_time(self):
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        assert_equals(product.running_time, '494')
+
+    def test_studio(self):
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        assert_equals(product.studio, 'Atlantic Records UK')
+
+    def test_is_preorder(self):
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        assert_true(product.is_preorder == '1')
+
+    def test_detail_page_url(self):
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        assert_true(product.detail_page_url.startswith('https://www.amazon.com/%C3%B7-Deluxe-Ed-Sheeran/dp/B01NBTSVDN'))
+
+
     def test_kwargs(self):
         amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
                            AMAZON_ASSOC_TAG, MaxQPS=0.7)
