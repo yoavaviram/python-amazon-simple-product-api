@@ -10,21 +10,22 @@ from amazon.api import (AmazonAPI,
                         AmazonSearch,
                         AsinNotFound)
 
-try:
+_AMAZON_ACCESS_KEY = None
+_AMAZON_SECRET_KEY = None
+_AMAZON_ASSOC_TAG = None
+
+import os
+if 'AMAZON_ACCESS_KEY' in os.environ and 'AMAZON_SECRET_KEY' in os.environ and 'AMAZON_ASSOC_TAG' in os.environ:
+    _AMAZON_ACCESS_KEY = os.environ['AMAZON_ACCESS_KEY']
+    _AMAZON_SECRET_KEY = os.environ['AMAZON_SECRET_KEY']
+    _AMAZON_ASSOC_TAG = os.environ['AMAZON_ASSOC_TAG']
+else:
     from test_settings import (AMAZON_ACCESS_KEY,
                                AMAZON_SECRET_KEY,
                                AMAZON_ASSOC_TAG)
     _AMAZON_ACCESS_KEY = AMAZON_ACCESS_KEY
     _AMAZON_SECRET_KEY = AMAZON_SECRET_KEY
     _AMAZON_ASSOC_TAG = AMAZON_ASSOC_TAG
-except ModuleNotFoundError:
-    import os
-    if 'AMAZON_ACCESS_KEY' not in os.environ or 'AMAZON_SECRET_KEY' not in os.environ or 'AMAZON_ASSOC_TAG' not in os.environ:
-        raise Exception('AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY and AMAZON_ASSOC_TAG are not configured.')
-
-    _AMAZON_ACCESS_KEY = os.environ['AMAZON_ACCESS_KEY']
-    _AMAZON_SECRET_KEY = os.environ['AMAZON_SECRET_KEY']
-    _AMAZON_ASSOC_TAG = os.environ['AMAZON_ASSOC_TAG']
 
 
 TEST_ASIN = "0312098286"
