@@ -422,7 +422,8 @@ class AmazonAPI(object):
 
         return new_cart
 
-    def _check_for_cart_error(self, cart):
+    @staticmethod
+    def _check_for_cart_error(cart):
         if cart._safe_get_element('Cart.Request.Errors') is not None:
             error = cart._safe_get_element(
                 'Cart.Request.Errors.Error.Code').text
@@ -582,7 +583,7 @@ class AmazonSearch(object):
             else:
                 raise SearchException(
                     "Amazon Search Error: '{0}', '{1}'".format(code, msg))
-        if (hasattr(root.Items, 'TotalPages') and (root.Items.TotalPages == self.current_page)):
+        if hasattr(root.Items, 'TotalPages') and root.Items.TotalPages == self.current_page:
             self.is_last_page = True
         return root
 
@@ -950,7 +951,7 @@ class AmazonProduct(LXMLWrapper):
         """
         iframe = self._safe_get_element_text('CustomerReviews.IFrameURL')
         has_reviews = self._safe_get_element_text('CustomerReviews.HasReviews')
-        if has_reviews and has_reviews == 'true':
+        if has_reviews is not None and has_reviews == 'true':
             has_reviews = True
         else:
             has_reviews = False
