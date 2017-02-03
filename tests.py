@@ -417,12 +417,46 @@ class TestAmazonApi(unittest.TestCase):
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_is_preorder(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
-        assert_true(product.is_preorder == '1')
+        assert_equal(product.is_preorder, '1')
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_detail_page_url(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
         assert_true(product.detail_page_url.startswith('https://www.amazon.com/%C3%B7-Deluxe-Ed-Sheeran/dp/B01NBTSVDN'))
+
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_availability(self):
+        product = self.amazon.lookup(ItemId="B01CD5VC92")
+        assert_equals(product.availability, 'Usually ships in 24 hours')
+
+        product = self.amazon.lookup(ItemId="1491914254") # pre-order book
+        assert_equals(product.availability, 'Not yet published')
+
+        product = self.amazon.lookup(ItemId="B000SML2BQ") # late availability
+        assert_equals(product.availability, 'Usually ships in 3 to 6 weeks')
+
+        product = self.amazon.lookup(ItemId="B01LTHP2ZK") # unavailable 
+        assert_true(product.availability is None)
+
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_availability_type(self):
+        product = self.amazon.lookup(ItemId="B01CD5VC92")
+        assert_equals(product.availability_type, 'now')
+
+        product = self.amazon.lookup(ItemId="1491914254") # pre-order book
+        assert_equals(product.availability_type, 'now')
+
+        product = self.amazon.lookup(ItemId="B000SML2BQ") # late availability
+        assert_equals(product.availability_type, 'now')
+
+        product = self.amazon.lookup(ItemId="B01LTHP2ZK") # unavailable
+        assert_true(product.availability_type is None)
+
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_availability_min_max_hours(self):
+        product = self.amazon.lookup(ItemId="B01CD5VC92")
+        assert_equals(product.availability_min_hours, '0')
+        assert_equals(product.availability_max_hours, '0')
 
 
     def test_kwargs(self):

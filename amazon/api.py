@@ -1326,6 +1326,42 @@ class AmazonProduct(LXMLWrapper):
         return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.IsPreorder')
 
     @property
+    def availability(self):
+        """Availability
+
+        :return:
+            Availability (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.Availability')
+
+    @property
+    def availability_type(self):
+        """AvailabilityAttributes.AvailabilityType
+
+        :return:
+            AvailabilityType (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.AvailabilityType')
+
+    @property
+    def availability_min_hours(self):
+        """AvailabilityAttributes.MinimumHours
+
+        :return:
+            MinimumHours (int).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.MinimumHours')
+
+    @property
+    def availability_max_hours(self):
+        """AvailabilityAttributes.MaximumHours
+
+        :return:
+            MaximumHours (int).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.MaximumHours')
+
+    @property
     def detail_page_url(self):
         """DetailPageURL.
 
