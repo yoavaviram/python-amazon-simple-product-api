@@ -417,7 +417,7 @@ class TestAmazonApi(unittest.TestCase):
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_is_preorder(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
-        assert_equal(product.is_preorder, '1')
+        assert_equals(product.is_preorder, '1')
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_detail_page_url(self):
