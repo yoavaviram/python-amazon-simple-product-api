@@ -1,7 +1,9 @@
 import unittest
 
 from nose.tools import assert_equals, assert_true, assert_false, assert_raises
+from flaky import flaky
 
+import time
 import datetime
 from amazon.api import (AmazonAPI,
                         CartException,
@@ -9,9 +11,23 @@ from amazon.api import (AmazonAPI,
                         SearchException,
                         AmazonSearch,
                         AsinNotFound)
-from test_settings import (AMAZON_ACCESS_KEY,
-                           AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG)
+
+_AMAZON_ACCESS_KEY = None
+_AMAZON_SECRET_KEY = None
+_AMAZON_ASSOC_TAG = None
+
+import os
+if 'AMAZON_ACCESS_KEY' in os.environ and 'AMAZON_SECRET_KEY' in os.environ and 'AMAZON_ASSOC_TAG' in os.environ:
+    _AMAZON_ACCESS_KEY = os.environ['AMAZON_ACCESS_KEY']
+    _AMAZON_SECRET_KEY = os.environ['AMAZON_SECRET_KEY']
+    _AMAZON_ASSOC_TAG = os.environ['AMAZON_ASSOC_TAG']
+else:
+    from test_settings import (AMAZON_ACCESS_KEY,
+                               AMAZON_SECRET_KEY,
+                               AMAZON_ASSOC_TAG)
+    _AMAZON_ACCESS_KEY = AMAZON_ACCESS_KEY
+    _AMAZON_SECRET_KEY = AMAZON_SECRET_KEY
+    _AMAZON_ASSOC_TAG = AMAZON_ASSOC_TAG
 
 
 TEST_ASIN = "0312098286"
@@ -51,6 +67,10 @@ def cache_clear():
     global CACHE
     CACHE = {}
 
+def delay_rerun(*args):
+    time.sleep(3)
+    return True
+
 
 class TestAmazonApi(unittest.TestCase):
     """Test Amazon API
@@ -70,14 +90,15 @@ class TestAmazonApi(unittest.TestCase):
         Are imported from a custom file named: 'test_settings.py'
         """
         self.amazon = AmazonAPI(
-            AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG,
+            _AMAZON_ACCESS_KEY,
+            _AMAZON_SECRET_KEY,
+            _AMAZON_ASSOC_TAG,
             CacheReader=cache_reader,
             CacheWriter=cache_writer,
             MaxQPS=0.5
         )
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_lookup(self):
         """Test Product Lookup.
 
@@ -104,6 +125,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(product.browse_nodes[0].id, 2642129011)
         assert_equals(product.browse_nodes[0].name, 'eBook Readers')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_lookup_nonexistent_asin(self):
         """Test Product Lookup with a nonexistent ASIN.
 
@@ -111,6 +133,7 @@ class TestAmazonApi(unittest.TestCase):
         """
         assert_raises(AsinNotFound, self.amazon.lookup, ItemId="ABCD1234")
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_bulk_lookup(self):
         """Test Baulk Product Lookup.
 
@@ -123,6 +146,7 @@ class TestAmazonApi(unittest.TestCase):
         for i, product in enumerate(products):
             assert_equals(asins[i], product.asin)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_lookup_bulk(self):
         """Test Bulk Product Lookup.
 
@@ -135,6 +159,7 @@ class TestAmazonApi(unittest.TestCase):
         for i, product in enumerate(products):
             assert_equals(asins[i], product.asin)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_lookup_bulk_empty(self):
         """Test Bulk Product Lookup With No Results.
 
@@ -146,6 +171,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(type(products), list)
         assert_equals(len(products), 0)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_search(self):
         """Test Product Search.
 
@@ -160,6 +186,7 @@ class TestAmazonApi(unittest.TestCase):
         else:
             assert_true(False, 'No search results returned.')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_search_n(self):
         """Test Product Search N.
 
@@ -173,6 +200,7 @@ class TestAmazonApi(unittest.TestCase):
         )
         assert_equals(len(products), 1)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_search_iterate_pages(self):
         products = self.amazon.search(Keywords='internet of things oreilly',
                                       SearchIndex='Books')
@@ -186,6 +214,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_true(products.is_last_page)
         assert_true(products.current_page == 8)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_search_no_results(self):
         """Test Product Search with no results.
 
@@ -199,12 +228,13 @@ class TestAmazonApi(unittest.TestCase):
     def test_amazon_api_defaults_to_US(self):
         """Test Amazon API defaults to the US store."""
         amazon = AmazonAPI(
-            AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG
+            _AMAZON_ACCESS_KEY,
+            _AMAZON_SECRET_KEY,
+            _AMAZON_ASSOC_TAG
         )
         assert_equals(amazon.api.Region, "US")
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_search_amazon_uk(self):
         """Test Poduct Search on Amazon UK.
 
@@ -213,9 +243,9 @@ class TestAmazonApi(unittest.TestCase):
         results were returned.
         """
         amazon = AmazonAPI(
-            AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG,
+            _AMAZON_ACCESS_KEY,
+            _AMAZON_SECRET_KEY,
+            _AMAZON_ASSOC_TAG,
             region="UK"
         )
         assert_equals(amazon.api.Region, "UK", "Region has not been set to UK")
@@ -227,6 +257,7 @@ class TestAmazonApi(unittest.TestCase):
         is_gbp = 'GBP' in currencies
         assert_true(is_gbp, "Currency is not GBP, cannot be Amazon UK, though")
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_similarity_lookup(self):
         """Test Similarity Lookup.
 
@@ -235,6 +266,7 @@ class TestAmazonApi(unittest.TestCase):
         products = self.amazon.similarity_lookup(ItemId=TEST_ASIN)
         assert_true(len(products) > 5)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_product_attributes(self):
         """Test Product Attributes.
 
@@ -244,6 +276,7 @@ class TestAmazonApi(unittest.TestCase):
         for attribute in PRODUCT_ATTRIBUTES:
             getattr(product, attribute)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_browse_node_lookup(self):
         """Test Browse Node Lookup.
 
@@ -255,6 +288,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(bn.name, 'eBook Readers')
         assert_equals(bn.is_category_root, False)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_obscure_date(self):
         """Test Obscure Date Formats
 
@@ -265,6 +299,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(product.publication_date.month, 5)
         assert_true(isinstance(product.publication_date, datetime.date))
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_single_creator(self):
         """Test a product with a single creator
         """
@@ -273,6 +308,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(creators[u"Jonathan Davis"], u"Narrator")
         assert_equals(len(creators.values()), 2)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_multiple_creators(self):
         """Test a product with multiple creators
         """
@@ -282,12 +318,14 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(creators[u"Colin Azariah-Kribbs"], u"Editor")
         assert_equals(len(creators.values()), 2)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_no_creators(self):
         """Test a product with no creators
         """
         product = self.amazon.lookup(ItemId="8420658537")
         assert_false(product.creators)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_single_editorial_review(self):
         product = self.amazon.lookup(ItemId="1930846258")
         expected = u'In the title piece, Alan Turing'
@@ -295,6 +333,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(product.editorial_review, product.editorial_reviews[0])
         assert_equals(len(product.editorial_reviews), 1)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_multiple_editorial_reviews(self):
         product = self.amazon.lookup(ItemId="B000FBJCJE")
         expected = u'<b>One of <i>Time</i>'
@@ -307,6 +346,7 @@ class TestAmazonApi(unittest.TestCase):
 
         assert_equals(len(product.editorial_reviews), 3)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_languages_english(self):
         """Test Language Data
 
@@ -316,6 +356,7 @@ class TestAmazonApi(unittest.TestCase):
         assert_true('english' in product.languages)
         assert_equals(len(product.languages), 1)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_languages_spanish(self):
         """Test Language Data
 
@@ -326,24 +367,26 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(len(product.languages), 1)
 
     def test_region(self):
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG)
+        amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
+                           _AMAZON_ASSOC_TAG)
         assert_equals(amazon.region, 'US')
 
         # old 'region' parameter
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG, region='UK')
+        amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
+                           _AMAZON_ASSOC_TAG, region='UK')
         assert_equals(amazon.region, 'UK')
 
         # kwargs method
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG, Region='UK')
+        amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
+                           _AMAZON_ASSOC_TAG, Region='UK')
         assert_equals(amazon.region, 'UK')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_is_adult(self):
         product = self.amazon.lookup(ItemId="B01E7P9LEE")
         assert_true(product.is_adult is not None)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_product_group(self):
         product = self.amazon.lookup(ItemId="B01LXM0S25")
         assert_equals(product.product_group, 'DVD')
@@ -351,35 +394,76 @@ class TestAmazonApi(unittest.TestCase):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
         assert_equals(product.product_group, 'Digital Music Album')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_product_type_name(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
         assert_equals(product.product_type_name, 'DOWNLOADABLE_MUSIC_ALBUM')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_formatted_price(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
         assert_equals(product.formatted_price, '$12.49')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_running_time(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
         assert_equals(product.running_time, '494')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_studio(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
         assert_equals(product.studio, 'Atlantic Records UK')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_is_preorder(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
-        assert_true(product.is_preorder == '1')
+        assert_equals(product.is_preorder, '1')
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_detail_page_url(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
         assert_true(product.detail_page_url.startswith('https://www.amazon.com/%C3%B7-Deluxe-Ed-Sheeran/dp/B01NBTSVDN'))
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_availability(self):
+        product = self.amazon.lookup(ItemId="B01CD5VC92")
+        assert_equals(product.availability, 'Usually ships in 24 hours')
+
+        product = self.amazon.lookup(ItemId="1491914254") # pre-order book
+        assert_equals(product.availability, 'Not yet published')
+
+        product = self.amazon.lookup(ItemId="B000SML2BQ") # late availability
+        assert_equals(product.availability, 'Usually ships in 3 to 6 weeks')
+
+        product = self.amazon.lookup(ItemId="B01LTHP2ZK") # unavailable 
+        assert_true(product.availability is None)
+
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_availability_type(self):
+        product = self.amazon.lookup(ItemId="B01CD5VC92")
+        assert_equals(product.availability_type, 'now')
+
+        product = self.amazon.lookup(ItemId="1491914254") # pre-order book
+        assert_equals(product.availability_type, 'now')
+
+        product = self.amazon.lookup(ItemId="B000SML2BQ") # late availability
+        assert_equals(product.availability_type, 'now')
+
+        product = self.amazon.lookup(ItemId="B01LTHP2ZK") # unavailable
+        assert_true(product.availability_type is None)
+
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_availability_min_max_hours(self):
+        product = self.amazon.lookup(ItemId="B01CD5VC92")
+        assert_equals(product.availability_min_hours, '0')
+        assert_equals(product.availability_max_hours, '0')
+
 
     def test_kwargs(self):
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG, MaxQPS=0.7)
+        amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
+                           _AMAZON_ASSOC_TAG, MaxQPS=0.7)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_images(self):
         """Test images property
 
@@ -395,9 +479,9 @@ class TestAmazonApi(unittest.TestCase):
 class TestAmazonCart(unittest.TestCase):
     def setUp(self):
         self.amazon = AmazonAPI(
-            AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG,
+            _AMAZON_ACCESS_KEY,
+            _AMAZON_SECRET_KEY,
+            _AMAZON_ASSOC_TAG,
             CacheReader=cache_reader,
             CacheWriter=cache_writer,
             MaxQPS=0.5
