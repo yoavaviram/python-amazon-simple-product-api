@@ -9,9 +9,22 @@ from amazon.api import (AmazonAPI,
                         SearchException,
                         AmazonSearch,
                         AsinNotFound)
-from test_settings import (AMAZON_ACCESS_KEY,
-                           AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG)
+
+try:
+    from test_settings import (AMAZON_ACCESS_KEY,
+                               AMAZON_SECRET_KEY,
+                               AMAZON_ASSOC_TAG)
+    _AMAZON_ACCESS_KEY = AMAZON_ACCESS_KEY
+    _AMAZON_SECRET_KEY = AMAZON_SECRET_KEY
+    _AMAZON_ASSOC_TAG = AMAZON_ASSOC_TAG
+except ModuleNotFoundError:
+    import os
+    if 'AMAZON_ACCESS_KEY' not in os.environ or 'AMAZON_SECRET_KEY' not in os.environ or 'AMAZON_ASSOC_TAG' not in os.environ:
+        raise Exception('AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY and AMAZON_ASSOC_TAG are not configured.')
+
+    _AMAZON_ACCESS_KEY = os.environ['AMAZON_ACCESS_KEY']
+    _AMAZON_SECRET_KEY = os.environ['AMAZON_SECRET_KEY']
+    _AMAZON_ASSOC_TAG = os.environ['AMAZON_ASSOC_TAG']
 
 
 TEST_ASIN = "0312098286"
@@ -70,9 +83,9 @@ class TestAmazonApi(unittest.TestCase):
         Are imported from a custom file named: 'test_settings.py'
         """
         self.amazon = AmazonAPI(
-            AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG,
+            _AMAZON_ACCESS_KEY,
+            _AMAZON_SECRET_KEY,
+            _AMAZON_ASSOC_TAG,
             CacheReader=cache_reader,
             CacheWriter=cache_writer,
             MaxQPS=0.5
@@ -199,9 +212,9 @@ class TestAmazonApi(unittest.TestCase):
     def test_amazon_api_defaults_to_US(self):
         """Test Amazon API defaults to the US store."""
         amazon = AmazonAPI(
-            AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG
+            _AMAZON_ACCESS_KEY,
+            _AMAZON_SECRET_KEY,
+            _AMAZON_ASSOC_TAG
         )
         assert_equals(amazon.api.Region, "US")
 
@@ -213,9 +226,9 @@ class TestAmazonApi(unittest.TestCase):
         results were returned.
         """
         amazon = AmazonAPI(
-            AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG,
+            _AMAZON_ACCESS_KEY,
+            _AMAZON_SECRET_KEY,
+            _AMAZON_ASSOC_TAG,
             region="UK"
         )
         assert_equals(amazon.api.Region, "UK", "Region has not been set to UK")
@@ -326,18 +339,18 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(len(product.languages), 1)
 
     def test_region(self):
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG)
+        amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
+                           _AMAZON_ASSOC_TAG)
         assert_equals(amazon.region, 'US')
 
         # old 'region' parameter
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG, region='UK')
+        amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
+                           _AMAZON_ASSOC_TAG, region='UK')
         assert_equals(amazon.region, 'UK')
 
         # kwargs method
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG, Region='UK')
+        amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
+                           _AMAZON_ASSOC_TAG, Region='UK')
         assert_equals(amazon.region, 'UK')
 
     def test_is_adult(self):
@@ -377,8 +390,8 @@ class TestAmazonApi(unittest.TestCase):
 
 
     def test_kwargs(self):
-        amazon = AmazonAPI(AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY,
-                           AMAZON_ASSOC_TAG, MaxQPS=0.7)
+        amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
+                           _AMAZON_ASSOC_TAG, MaxQPS=0.7)
 
     def test_images(self):
         """Test images property
@@ -395,9 +408,9 @@ class TestAmazonApi(unittest.TestCase):
 class TestAmazonCart(unittest.TestCase):
     def setUp(self):
         self.amazon = AmazonAPI(
-            AMAZON_ACCESS_KEY,
-            AMAZON_SECRET_KEY,
-            AMAZON_ASSOC_TAG,
+            _AMAZON_ACCESS_KEY,
+            _AMAZON_SECRET_KEY,
+            _AMAZON_ASSOC_TAG,
             CacheReader=cache_reader,
             CacheWriter=cache_writer,
             MaxQPS=0.5
