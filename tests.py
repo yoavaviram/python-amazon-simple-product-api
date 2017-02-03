@@ -67,7 +67,7 @@ def cache_clear():
     global CACHE
     CACHE = {}
 
-def delay_rerun():
+def delay_rerun(*args):
     time.sleep(3)
     return True
 
