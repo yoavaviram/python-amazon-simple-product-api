@@ -1348,7 +1348,7 @@ class AmazonProduct(LXMLWrapper):
         """AvailabilityAttributes.MinimumHours
 
         :return:
-            MinimumHours (int).
+            MinimumHours (string).
         """
         return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.MinimumHours')
 
@@ -1357,7 +1357,7 @@ class AmazonProduct(LXMLWrapper):
         """AvailabilityAttributes.MaximumHours
 
         :return:
-            MaximumHours (int).
+            MaximumHours (string).
         """
         return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.MaximumHours')
 
