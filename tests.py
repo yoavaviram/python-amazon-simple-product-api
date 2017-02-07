@@ -67,8 +67,8 @@ def cache_clear():
     global CACHE
     CACHE = {}
 
-def delay_rerun(*args):
-    time.sleep(3)
+def delay_rerun(err, *args):
+    time.sleep(5)
     return True
 
 
@@ -335,13 +335,13 @@ class TestAmazonApi(unittest.TestCase):
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_multiple_editorial_reviews(self):
-        product = self.amazon.lookup(ItemId="B000FBJCJE")
-        expected = u'<b>One of <i>Time</i>'
+        product = self.amazon.lookup(ItemId="B01HQA6EOC")
+        expected = u'<p>Introducing an instant classic—master storyteller'
         assert_equals(product.editorial_reviews[0][:len(expected)], expected)
-        expected = u'From the opening line'
+        expected = u'<strong>An Amazon Best Book of February 2017:</strong>'
         assert_equals(product.editorial_reviews[1][:len(expected)], expected)
         # duplicate data, amazon user data is great...
-        expected = u'<b>One of <i>Time</i>'
+        expected = u'<p>Introducing an instant classic—master storyteller'
         assert_equals(product.editorial_reviews[2][:len(expected)], expected)
 
         assert_equals(len(product.editorial_reviews), 3)
