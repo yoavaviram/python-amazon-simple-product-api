@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import unittest
 
 from nose.tools import assert_equals, assert_true, assert_false, assert_raises
