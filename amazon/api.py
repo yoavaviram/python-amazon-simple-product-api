@@ -671,6 +671,15 @@ class AmazonProduct(LXMLWrapper):
         self.region = kwargs.get('region', 'US')
 
     @property
+    def raw_xml(self):
+        """Return the raw XML that is returned by the service
+
+        :return:
+            Raw XML (string)
+        """
+        return self.to_string()
+
+    @property
     def price_and_currency(self):
         """Get Offer Price and Currency.
 
