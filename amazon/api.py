@@ -422,7 +422,8 @@ class AmazonAPI(object):
 
         return new_cart
 
-    def _check_for_cart_error(self, cart):
+    @staticmethod
+    def _check_for_cart_error(cart):
         if cart._safe_get_element('Cart.Request.Errors') is not None:
             error = cart._safe_get_element(
                 'Cart.Request.Errors.Error.Code').text
@@ -525,7 +526,8 @@ class AmazonSearch(object):
             An string representing an Amazon Associates tag.
         """
         self.kwargs = kwargs
-        self.current_page = 1
+        self.current_page = 0
+        self.is_last_page = False
         self.api = api
         self.aws_associate_tag = aws_associate_tag
 
@@ -553,9 +555,9 @@ class AmazonSearch(object):
             Yields lxml root elements.
         """
         try:
-            while True:
-                yield self._query(ItemPage=self.current_page, **self.kwargs)
+            while not self.is_last_page:
                 self.current_page += 1
+                yield self._query(ItemPage=self.current_page, **self.kwargs)
         except NoMorePages:
             pass
 
@@ -581,6 +583,8 @@ class AmazonSearch(object):
             else:
                 raise SearchException(
                     "Amazon Search Error: '{0}', '{1}'".format(code, msg))
+        if hasattr(root.Items, 'TotalPages') and root.Items.TotalPages == self.current_page:
+            self.is_last_page = True
         return root
 
 
@@ -947,7 +951,7 @@ class AmazonProduct(LXMLWrapper):
         """
         iframe = self._safe_get_element_text('CustomerReviews.IFrameURL')
         has_reviews = self._safe_get_element_text('CustomerReviews.HasReviews')
-        if has_reviews and has_reviews == 'true':
+        if has_reviews is not None and has_reviews == 'true':
             has_reviews = True
         else:
             has_reviews = False
@@ -1257,6 +1261,114 @@ class AmazonProduct(LXMLWrapper):
         for director in directors:
             result.append(director.text)
         return result
+
+    @property
+    def is_adult(self):
+        """IsAdultProduct.
+
+        :return:
+            IsAdultProduct (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.IsAdultProduct')
+
+    @property
+    def product_group(self):
+        """ProductGroup.
+
+        :return:
+            ProductGroup (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.ProductGroup')
+
+    @property
+    def product_type_name(self):
+        """ProductTypeName.
+
+        :return:
+            ProductTypeName (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.ProductTypeName')
+
+    @property
+    def formatted_price(self):
+        """FormattedPrice.
+
+        :return:
+            FormattedPrice (string)
+        """
+        return self._safe_get_element_text('OfferSummary.LowestNewPrice.FormattedPrice')
+
+    @property
+    def running_time(self):
+        """RunningTime.
+
+        :return:
+            RunningTime (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.RunningTime')
+
+    @property
+    def studio(self):
+        """Studio.
+
+        :return:
+            Studio (string)
+        """
+        return self._safe_get_element_text('ItemAttributes.Studio')
+
+    @property
+    def is_preorder(self):
+        """IsPreorder (Is Preorder)
+
+        :return:
+            IsPreorder (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.IsPreorder')
+
+    @property
+    def availability(self):
+        """Availability
+
+        :return:
+            Availability (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.Availability')
+
+    @property
+    def availability_type(self):
+        """AvailabilityAttributes.AvailabilityType
+
+        :return:
+            AvailabilityType (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.AvailabilityType')
+
+    @property
+    def availability_min_hours(self):
+        """AvailabilityAttributes.MinimumHours
+
+        :return:
+            MinimumHours (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.MinimumHours')
+
+    @property
+    def availability_max_hours(self):
+        """AvailabilityAttributes.MaximumHours
+
+        :return:
+            MaximumHours (string).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.MaximumHours')
+
+    @property
+    def detail_page_url(self):
+        """DetailPageURL.
+
+        :return:
+            DetailPageURL (string)
+        """
+        return self._safe_get_element_text('DetailPageURL')
 
 
 class AmazonCart(LXMLWrapper):
