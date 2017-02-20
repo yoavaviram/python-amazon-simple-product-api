@@ -84,12 +84,12 @@ class TestAmazonApi(unittest.TestCase):
         Tests that a product lookup for a kindle returns results and that the
         main methods are working.
         """
-        product = self.amazon.lookup(ItemId="B00I15SB16")
+        product = self.amazon.lookup(ItemId="B00ZV9PXP2")
         assert_true('Kindle' in product.title)
-        assert_equals(product.ean, '0848719039726')
+        assert_equals(product.ean, '0848719083774')
         assert_equals(
             product.large_image_url,
-            'https://images-na.ssl-images-amazon.com/images/I/51XGerXeYeL.jpg'
+            'https://images-na.ssl-images-amazon.com/images/I/51hrdzXLUHL.jpg'
         )
         assert_equals(
             product.get_attribute('Publisher'),
@@ -97,7 +97,7 @@ class TestAmazonApi(unittest.TestCase):
         )
         assert_equals(product.get_attributes(
             ['ItemDimensions.Width', 'ItemDimensions.Height']),
-            {'ItemDimensions.Width': '469', 'ItemDimensions.Height': '40'})
+            {'ItemDimensions.Width': '450', 'ItemDimensions.Height': '36'})
         assert_true(len(product.browse_nodes) > 0)
         assert_true(product.price_and_currency[0] is not None)
         assert_true(product.price_and_currency[1] is not None)
