@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 import pypandoc
 
-long_description = pypandoc.convert('README.md', 'rst', format='markdown')
+long_description = pypandoc.convert('README.md', 'rst', format='markdown_github')
 
 
 setup(name='python-amazon-simple-product-api',
