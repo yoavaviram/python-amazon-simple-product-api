@@ -151,7 +151,7 @@ Create and manipulate Carts:
      >>> modified_cart = amazon.cart_modify(item, cart.cart_id, cart.hmac)     
      >>> cleared_cart = amazon.cart_clear(cart.cart_id, cart.hmac)
 
-For 'Books' SearchIndex a (Power Search)[https://docs.aws.amazon.com/AWSECommerceService/latest/DG/PowerSearchSyntax.html] option is avaialble:
+For the 'Books' SearchIndex a [Power Search](https://docs.aws.amazon.com/AWSECommerceService/latest/DG/PowerSearchSyntax.html) option is avaialble:
 
      >>> products = amazon.search(Power="subject:history and (spain or mexico) and not military and language:spanish",SearchIndex='Books')
 
