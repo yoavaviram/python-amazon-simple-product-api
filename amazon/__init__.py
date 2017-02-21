@@ -6,5 +6,5 @@ Python Amazon Simple Product Api
 Amazon Product Advertising API Client library.
 """
 
-__version__ = '2.2.2'
+__version__ = '2.2.4'
 __author__ = 'Yoav Aviram'
