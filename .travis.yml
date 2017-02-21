@@ -20,8 +20,6 @@ deploy:
   user: "Yoav.Aviram"
   password:
     secure: FOaqWOnjlWbM/K7MmyAXy1V6zDUYEkfO4FgLYiAOoTXGfNdOKSJGxKD7cb+Wq5CjN3XX/Y1KNXwXZZ4odKRWX463Q80vU4x6wpxMbFYLP36EuwiFNqW63qYLftbSkqDrLWRjp06vENDGmadStdYb9CruboLzyau07mFPpHmuWmg=
-  on:
-    tags: true
 addons:
   apt_packages:
     - pandoc
