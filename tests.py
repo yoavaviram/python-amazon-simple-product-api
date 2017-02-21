@@ -20,6 +20,7 @@ _AMAZON_ACCESS_KEY = None
 _AMAZON_SECRET_KEY = None
 _AMAZON_ASSOC_TAG = None
 
+
 import os
 if 'AMAZON_ACCESS_KEY' in os.environ and 'AMAZON_SECRET_KEY' in os.environ and 'AMAZON_ASSOC_TAG' in os.environ:
     _AMAZON_ACCESS_KEY = os.environ['AMAZON_ACCESS_KEY']
