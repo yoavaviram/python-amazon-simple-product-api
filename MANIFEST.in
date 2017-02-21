@@ -1,0 +1,5 @@
+include *.md *.rst *.txt INSTALL LICENSE tox.ini .travis.yml docs/Makefile
+include tests.py
+recursive-include docs *.py
+recursive-include docs *.rst
+prune docs/_build
