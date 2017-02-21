@@ -1,16 +1,26 @@
 language: python
 python:
-  - 2.7
-  - 3.5
-install: 
-  - pip install .
-  - pip install pep8 
-  - pip install -r requirements.txt
-  - pip install -r test-requirements.txt
-script: 
-  - "pep8 --ignore=E501,E225,E128 amazon"
-  - "sphinx-build -b html -d _build/doctrees ./docs/ _build/html"
-  - nosetests --with-flaky --with-coverage --cover-package=amazon
+- 2.7
+- 3.5
+install:
+- pip install .
+- pip install pep8
+- pip install -r requirements.txt
+- pip install -r test-requirements.txt
+script:
+- pep8 --ignore=E501,E225,E128 amazon
+- sphinx-build -b html -d _build/doctrees ./docs/ _build/html
+- nosetests --with-flaky --with-coverage --cover-package=amazon
 after_success:
-  - coveralls
-sudo: false 
+- coveralls
+sudo: false
+deploy:
+  provider: pypi
+  user: "Yoav.Aviram"
+  password:
+    secure: FOaqWOnjlWbM/K7MmyAXy1V6zDUYEkfO4FgLYiAOoTXGfNdOKSJGxKD7cb+Wq5CjN3XX/Y1KNXwXZZ4odKRWX463Q80vU4x6wpxMbFYLP36EuwiFNqW63qYLftbSkqDrLWRjp06vENDGmadStdYb9CruboLzyau07mFPpHmuWmg=
+  on:
+    tags: true
+addons:
+  apt_packages:
+    - pandoc

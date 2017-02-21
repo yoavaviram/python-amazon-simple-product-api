@@ -1,6 +1,7 @@
 Amazon Simple Product API
 ==========================
 A simple Python wrapper for the Amazon.com Product Advertising API.
+
 [![Build Status](https://secure.travis-ci.org/yoavaviram/python-amazon-simple-product-api.png?branch=master)](http://travis-ci.org/yoavaviram/python-amazon-simple-product-api)
 [![Documentation Status](https://readthedocs.org/projects/python-amazon-simple-product-api/badge/?version=latest)](http://python-amazon-simple-product-api.readthedocs.org/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/yoavaviram/python-amazon-simple-product-api/badge.svg?branch=master)](https://coveralls.io/github/yoavaviram/python-amazon-simple-product-api?branch=master)
@@ -148,6 +149,10 @@ Create and manipulate Carts:
      >>> modify_item = {'cart_item_id': cart_item_id, 'quantity': 3}
      >>> modified_cart = amazon.cart_modify(item, cart.cart_id, cart.hmac)     
      >>> cleared_cart = amazon.cart_clear(cart.cart_id, cart.hmac)
+
+For 'Books' SearchIndex a (Power Search)[https://docs.aws.amazon.com/AWSECommerceService/latest/DG/PowerSearchSyntax.html] option is avaialble:
+
+     >>> products = amazon.search(Power="subject:history and (spain or mexico) and not military and language:spanish",SearchIndex='Books')
 
 
 For more information about these calls, please consult the [Product Advertising

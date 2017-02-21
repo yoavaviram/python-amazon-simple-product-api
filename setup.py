@@ -2,10 +2,16 @@ import amazon
 
 from setuptools import setup, find_packages
 
+try:
+   import pypandoc
+   long_description = pypandoc.convert('README.md', 'rst')
+except (IOError, ImportError):
+   long_description = ''
 
 setup(name='python-amazon-simple-product-api',
       version=amazon.__version__,
       description="A simple Python wrapper for the Amazon.com Product Advertising API",
+      long_description=long_description,
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
           "Development Status :: 5 - Production/Stable",
@@ -25,7 +31,7 @@ setup(name='python-amazon-simple-product-api',
           ],
       keywords='amazon, product advertising, api',
       author='Yoav Aviram',
-      author_email='support@cleverblocks.com',
+      author_email='yoav.aviram@gmail.com',
       url='https://github.com/yoavaviram/python-amazon-simple-product-api',
       license='Apache 2.0',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
