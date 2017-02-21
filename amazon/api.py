@@ -19,6 +19,7 @@ from itertools import islice
 import bottlenose
 from lxml import objectify, etree
 import dateutil.parser
+from decimal import Decimal
 
 
 # https://kdp.amazon.com/help?topicId=A1CT8LK6UW2FXJ
@@ -688,7 +689,7 @@ class AmazonProduct(LXMLWrapper):
         :return:
             A tuple containing:
 
-                1. Float representation of price.
+                1. Decimal representation of price.
                 2. ISO Currency code (string).
         """
         price = self._safe_get_element_text(
@@ -708,8 +709,8 @@ class AmazonProduct(LXMLWrapper):
                 currency = self._safe_get_element_text(
                     'OfferSummary.LowestNewPrice.CurrencyCode')
         if price:
-            fprice = float(price) / 100 if 'JP' not in self.region else price
-            return fprice, currency
+            dprice = Decimal(price) / 100 if 'JP' not in self.region else Decimal(price)
+            return dprice, currency
         else:
             return None, None
 
@@ -1117,14 +1118,15 @@ class AmazonProduct(LXMLWrapper):
         :return:
             A tuple containing:
 
-                1. Float representation of price.
+                1. Decimal representation of price.
                 2. ISO Currency code (string).
         """
         price = self._safe_get_element_text('ItemAttributes.ListPrice.Amount')
         currency = self._safe_get_element_text(
             'ItemAttributes.ListPrice.CurrencyCode')
         if price:
-            return float(price) / 100, currency
+            dprice = Decimal(price) / 100 if 'JP' not in self.region else Decimal(price)
+            return dprice, currency
         else:
             return None, None
 
