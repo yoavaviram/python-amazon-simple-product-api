@@ -2,11 +2,9 @@ import amazon
 
 from setuptools import setup, find_packages
 
-try:
-   import pypandoc
-   long_description = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError):
-   long_description = ''
+
+long_description = pypandoc.convert('README.md', 'rst')
+
 
 setup(name='python-amazon-simple-product-api',
       version=amazon.__version__,
