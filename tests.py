@@ -8,6 +8,7 @@ from flaky import flaky
 
 import time
 import datetime
+from decimal import Decimal
 from amazon.api import (AmazonAPI,
                         CartException,
                         CartInfoMismatchException,
@@ -406,6 +407,20 @@ class TestAmazonApi(unittest.TestCase):
     def test_formatted_price(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
         assert_equals(product.formatted_price, '$12.49')
+
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_price_and_currency(self):
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        price, currency = product.price_and_currency
+        assert_equals(price, Decimal('12.49'))
+        assert_equals(currency, 'USD')
+
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_list_price(self):
+        product = self.amazon.lookup(ItemId="B01NBTSVDN")
+        price, currency = product.list_price
+        assert_equals(price, Decimal('12.49'))
+        assert_equals(currency, 'USD')
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_running_time(self):
