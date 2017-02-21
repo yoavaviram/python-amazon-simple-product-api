@@ -2,16 +2,11 @@ import amazon
 
 from setuptools import setup, find_packages
 
-try:
-   import pypandoc
-   read_md = lambda f: pypandoc.convert(f, 'rst', format='markdown')
-except (IOError, ImportError):
-   read_md = lambda f: open(f, 'r').read()
 
 setup(name='python-amazon-simple-product-api',
       version=amazon.__version__,
       description="A simple Python wrapper for the Amazon.com Product Advertising API",
-      long_description=read_md('README.md'),
+      long_description=open('README.md', 'r').read(),
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
           "Development Status :: 5 - Production/Stable",
