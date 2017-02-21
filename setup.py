@@ -2,6 +2,7 @@ import amazon
 
 from setuptools import setup, find_packages
 
+import pypandoc
 
 long_description = pypandoc.convert('README.md', 'rst')
 
