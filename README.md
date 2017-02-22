@@ -4,7 +4,7 @@ A simple Python wrapper for the Amazon.com Product Advertising API.
 
 [![Build Status](https://secure.travis-ci.org/yoavaviram/python-amazon-simple-product-api.png?branch=master)](http://travis-ci.org/yoavaviram/python-amazon-simple-product-api)
 [![Documentation Status](https://readthedocs.org/projects/python-amazon-simple-product-api/badge/?version=latest)](http://python-amazon-simple-product-api.readthedocs.org/en/latest/?badge=latest)
-[![Coverage Status](https://coveralls.io/repos/github/yoavaviram/python-amazon-simple-product-api/badge.svg?branch=master)](https://coveralls.io/github/yoavaviram/python-amazon-simple-product-api?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/yoavaviram/python-amazon-simple-product-api/badge.svg?branch=master?a=1)](https://coveralls.io/github/yoavaviram/python-amazon-simple-product-api?branch=master)
 [![PyPI version](https://badge.fury.io/py/python-amazon-simple-product-api.svg)](https://badge.fury.io/py/python-amazon-simple-product-api)
 
 
