@@ -211,13 +211,13 @@ class TestAmazonApi(unittest.TestCase):
                                       SearchIndex='Books')
         assert_false(products.is_last_page)
         for product in products:
-            if products.current_page < 8:
+            if products.current_page < 9:
                 assert_false(products.is_last_page)
             else:
                 assert_true(products.is_last_page)
 
         assert_true(products.is_last_page)
-        assert_true(products.current_page == 8)
+        assert_true(products.current_page == 9)
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_search_no_results(self):
