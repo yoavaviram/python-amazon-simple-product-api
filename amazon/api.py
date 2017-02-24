@@ -675,6 +675,13 @@ class AmazonProduct(LXMLWrapper):
         self.parent = None
         self.region = kwargs.get('region', 'US')
 
+    def __str__(self):
+        """Return redable representation.
+
+        Uses the item's title.
+        """
+        return self.title
+
     @property
     def price_and_currency(self):
         """Get Offer Price and Currency.
