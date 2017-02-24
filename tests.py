@@ -510,7 +510,7 @@ class TestAmazonCart(unittest.TestCase):
                       'NotNone')
 
     def build_cart_object(self):
-        product = self.amazon.lookup(ItemId="B0016J8AOC")
+        product = self.amazon.lookup(ItemId="B00ZV9PXP2")
         return self.amazon.cart_create(
             {
                 'offer_id': product.offer_id,
@@ -523,7 +523,7 @@ class TestAmazonCart(unittest.TestCase):
         assert_equals(len(cart), 1)
 
     def test_cart_create_multiple_item(self):
-        product1 = self.amazon.lookup(ItemId="B0016J8AOC")
+        product1 = self.amazon.lookup(ItemId="B00ZV9PXP2")
         product2 = self.amazon.lookup(ItemId=TEST_ASIN)
         asins = [product1.asin, product2.asin]
 
