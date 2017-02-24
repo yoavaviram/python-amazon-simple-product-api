@@ -3,10 +3,16 @@ import amazon
 from setuptools import setup, find_packages
 
 
+try:
+  long_description=open('READMxE.md', 'r').read()
+except IOError:
+  long_description=""
+
+
 setup(name='python-amazon-simple-product-api',
       version=amazon.__version__,
       description="A simple Python wrapper for the Amazon.com Product Advertising API",
-      long_description=open('README.md', 'r').read(),
+      long_description=long_description,
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
           "Development Status :: 5 - Production/Stable",
