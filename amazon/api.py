@@ -1379,6 +1379,14 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text('DetailPageURL')
 
+    @property
+    def number_sellers(self):
+        """Number of offers - New.
+
+        :return:
+           Number of offers - New (string)\
+        """
+        return self._safe_get_element_text('OfferSummary.TotalNew')
 
 class AmazonCart(LXMLWrapper):
     """Wrapper around Amazon shopping cart.
