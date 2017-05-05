@@ -422,7 +422,7 @@ class TestAmazonApi(unittest.TestCase):
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_running_time(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
-        assert_equals(product.running_time, '774')
+        assert_equals(product.running_time, '3567')
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_studio(self):
@@ -432,7 +432,7 @@ class TestAmazonApi(unittest.TestCase):
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_is_preorder(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
-        assert_equals(product.is_preorder, '1')
+        assert_equals(product.is_preorder , None)
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_detail_page_url(self):
