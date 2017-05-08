@@ -584,8 +584,9 @@ class AmazonSearch(object):
             else:
                 raise SearchException(
                     "Amazon Search Error: '{0}', '{1}'".format(code, msg))
-        if hasattr(root.Items, 'TotalPages') and root.Items.TotalPages == self.current_page:
-            self.is_last_page = True
+        if hasattr(root.Items, 'TotalPages'):
+            if root.Items.TotalPages == self.current_page:
+                self.is_last_page = True
         return root
 
 
@@ -716,7 +717,8 @@ class AmazonProduct(LXMLWrapper):
                 currency = self._safe_get_element_text(
                     'OfferSummary.LowestNewPrice.CurrencyCode')
         if price:
-            dprice = Decimal(price) / 100 if 'JP' not in self.region else Decimal(price)
+            dprice = Decimal(
+                price) / 100 if 'JP' not in self.region else Decimal(price)
             return dprice, currency
         else:
             return None, None
@@ -1132,7 +1134,8 @@ class AmazonProduct(LXMLWrapper):
         currency = self._safe_get_element_text(
             'ItemAttributes.ListPrice.CurrencyCode')
         if price:
-            dprice = Decimal(price) / 100 if 'JP' not in self.region else Decimal(price)
+            dprice = Decimal(
+                price) / 100 if 'JP' not in self.region else Decimal(price)
             return dprice, currency
         else:
             return None, None
@@ -1305,7 +1308,8 @@ class AmazonProduct(LXMLWrapper):
         :return:
             FormattedPrice (string)
         """
-        return self._safe_get_element_text('OfferSummary.LowestNewPrice.FormattedPrice')
+        return self._safe_get_element_text(
+            'OfferSummary.LowestNewPrice.FormattedPrice')
 
     @property
     def running_time(self):
@@ -1332,7 +1336,8 @@ class AmazonProduct(LXMLWrapper):
         :return:
             IsPreorder (string).
         """
-        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.IsPreorder')
+        return self._safe_get_element_text(
+            'Offers.Offer.OfferListing.AvailabilityAttributes.IsPreorder')
 
     @property
     def availability(self):
@@ -1341,7 +1346,8 @@ class AmazonProduct(LXMLWrapper):
         :return:
             Availability (string).
         """
-        return self._safe_get_element_text('Offers.Offer.OfferListing.Availability')
+        return self._safe_get_element_text(
+            'Offers.Offer.OfferListing.Availability')
 
     @property
     def availability_type(self):
@@ -1350,7 +1356,9 @@ class AmazonProduct(LXMLWrapper):
         :return:
             AvailabilityType (string).
         """
-        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.AvailabilityType')
+        return self._safe_get_element_text(
+            'Offers.Offer.OfferListing.AvailabilityAttributes.AvailabilityType'
+            )
 
     @property
     def availability_min_hours(self):
@@ -1359,7 +1367,8 @@ class AmazonProduct(LXMLWrapper):
         :return:
             MinimumHours (string).
         """
-        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.MinimumHours')
+        return self._safe_get_element_text(
+            'Offers.Offer.OfferListing.AvailabilityAttributes.MinimumHours')
 
     @property
     def availability_max_hours(self):
@@ -1368,7 +1377,8 @@ class AmazonProduct(LXMLWrapper):
         :return:
             MaximumHours (string).
         """
-        return self._safe_get_element_text('Offers.Offer.OfferListing.AvailabilityAttributes.MaximumHours')
+        return self._safe_get_element_text(
+            'Offers.Offer.OfferListing.AvailabilityAttributes.MaximumHours')
 
     @property
     def detail_page_url(self):
@@ -1378,7 +1388,7 @@ class AmazonProduct(LXMLWrapper):
             DetailPageURL (string)
         """
         return self._safe_get_element_text('DetailPageURL')
-    
+
     @property
     def number_sellers(self):
         """Number of offers - New.
@@ -1439,7 +1449,8 @@ class AmazonCart(LXMLWrapper):
         for item in self:
             if item.cart_item_id == cart_item_id:
                 return item
-        raise KeyError('no item found with CartItemId: {0}'.format(cart_item_id,))
+        raise KeyError(
+            'no item found with CartItemId: {0}'.format(cart_item_id,))
 
 
 class AmazonCartItem(LXMLWrapper):
