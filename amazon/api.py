@@ -1358,7 +1358,7 @@ class AmazonProduct(LXMLWrapper):
         """
         return self._safe_get_element_text(
             'Offers.Offer.OfferListing.AvailabilityAttributes.AvailabilityType'
-            )
+        )
 
     @property
     def availability_min_hours(self):
