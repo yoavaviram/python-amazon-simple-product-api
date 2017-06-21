@@ -979,6 +979,22 @@ class AmazonProduct(LXMLWrapper):
                 ean = self._safe_get_element_text(
                     'EANListElement', root=ean_list[0])
         return ean
+    
+    @property
+    def eans(self):
+        """EANs.
+
+        :return:
+            EANs ([string])
+        """
+        eans = None
+        
+        ean_list = self._safe_get_element_text('ItemAttributes.EANList')
+        if ean_list:
+            eans = [self._safe_get_element_text(
+                'EANListElement', root=ean) for ean in ean_list]
+            
+        return eans
 
     @property
     def upc(self):
