@@ -994,6 +994,22 @@ class AmazonProduct(LXMLWrapper):
                 upc = self._safe_get_element_text(
                     'UPCListElement', root=upc_list[0])
         return upc
+    
+    @property
+    def upcs(self):
+        """UPCs.
+
+        :return:
+            UPCs ([string])
+        """
+        upcs = None
+        
+        upc_list = self._safe_get_element_text('ItemAttributes.UPCList')
+        if upc_list:
+            upcs = [self._safe_get_element_text(
+                'UPCListElement', root=upc) for upc in upc_list]
+            
+        return upcs
 
     @property
     def color(self):
