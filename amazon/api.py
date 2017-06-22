@@ -991,7 +991,7 @@ class AmazonProduct(LXMLWrapper):
         """
 
         ean_list = self._safe_get_element('ItemAttributes.EANList.EANListElement')
-        if len(ean_list) > 0:
+        if ean_list and len(ean_list) > 0:
             eans = [ean.text for ean in ean_list]
         else:
             eans = []
@@ -1023,7 +1023,7 @@ class AmazonProduct(LXMLWrapper):
         """
         
         upc_list = self._safe_get_element('ItemAttributes.UPCList.UPCListElement')
-        if len(upc_list) > 0:
+        if upc_list and len(upc_list) > 0:
             upcs = [upc.text for upc in upc_list]
         else:
             upcs = []
