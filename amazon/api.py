@@ -981,6 +981,22 @@ class AmazonProduct(LXMLWrapper):
                 ean = self._safe_get_element_text(
                     'EANListElement', root=ean_list[0])
         return ean
+    
+    @property
+    def eans(self):
+        """EANs.
+
+        :return:
+            EANs ([string])
+        """
+
+        ean_list = self._safe_get_element('ItemAttributes.EANList.EANListElement')
+        if len(ean_list) > 0:
+            eans = [ean.text for ean in ean_list]
+        else:
+            eans = []
+            
+        return eans
 
     @property
     def upc(self):
@@ -989,6 +1005,7 @@ class AmazonProduct(LXMLWrapper):
         :return:
             UPC (string)
         """
+        print("A")
         upc = self._safe_get_element_text('ItemAttributes.UPC')
         if upc is None:
             upc_list = self._safe_get_element_text('ItemAttributes.UPCList')
@@ -996,6 +1013,22 @@ class AmazonProduct(LXMLWrapper):
                 upc = self._safe_get_element_text(
                     'UPCListElement', root=upc_list[0])
         return upc
+    
+    @property
+    def upcs(self):
+        """UPCs.
+
+        :return:
+            UPCs ([string])
+        """
+        
+        upc_list = self._safe_get_element('ItemAttributes.UPCList.UPCListElement')
+        if len(upc_list) > 0:
+            upcs = [upc.text for upc in upc_list]
+        else:
+            upcs = []
+            
+        return upcs
 
     @property
     def color(self):
