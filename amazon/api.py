@@ -1005,7 +1005,6 @@ class AmazonProduct(LXMLWrapper):
         :return:
             UPC (string)
         """
-        print("A")
         upc = self._safe_get_element_text('ItemAttributes.UPC')
         if upc is None:
             upc_list = self._safe_get_element_text('ItemAttributes.UPCList')
