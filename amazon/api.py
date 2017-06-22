@@ -987,12 +987,12 @@ class AmazonProduct(LXMLWrapper):
         :return:
             EANs ([string])
         """
-        eans = None
-        
-        ean_list = self._safe_get_element_text('ItemAttributes.EANList')
-        if ean_list:
-            eans = [self._safe_get_element_text(
-                'EANListElement', root=ean) for ean in ean_list]
+
+        ean_list = self._safe_get_element('ItemAttributes.EANList.EANListElement')
+        if len(ean_list) > 0:
+            eans = [ean.text for ean in ean_list]
+        else:
+            eans = []
             
         return eans
 
@@ -1003,6 +1003,7 @@ class AmazonProduct(LXMLWrapper):
         :return:
             UPC (string)
         """
+        print("A")
         upc = self._safe_get_element_text('ItemAttributes.UPC')
         if upc is None:
             upc_list = self._safe_get_element_text('ItemAttributes.UPCList')
@@ -1018,12 +1019,12 @@ class AmazonProduct(LXMLWrapper):
         :return:
             UPCs ([string])
         """
-        upcs = None
         
-        upc_list = self._safe_get_element_text('ItemAttributes.UPCList')
-        if upc_list:
-            upcs = [self._safe_get_element_text(
-                'UPCListElement', root=upc) for upc in upc_list]
+        upc_list = self._safe_get_element('ItemAttributes.UPCList.UPCListElement')
+        if len(upc_list) > 0:
+            upcs = [upc.text for upc in upc_list]
+        else:
+            upcs = []
             
         return upcs
 
