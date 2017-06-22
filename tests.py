@@ -422,7 +422,7 @@ class TestAmazonApi(unittest.TestCase):
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_running_time(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
-        assert_equals(product.running_time, '774')
+        assert_equals(product.running_time, '3567')
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_studio(self):
@@ -432,7 +432,7 @@ class TestAmazonApi(unittest.TestCase):
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_is_preorder(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
-        assert_equals(product.is_preorder, '1')
+        assert_equals(product.is_preorder , None)
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_detail_page_url(self):
@@ -447,12 +447,6 @@ class TestAmazonApi(unittest.TestCase):
         product = self.amazon.lookup(ItemId="1491914254") # pre-order book
         assert_equals(product.availability, 'Not yet published')
 
-        product = self.amazon.lookup(ItemId="B000SML2BQ") # late availability
-        assert_true(product.availability is not None)
-
-        product = self.amazon.lookup(ItemId="B01LTHP2ZK") # unavailable 
-        assert_true(product.availability is None)
-
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_availability_type(self):
         product = self.amazon.lookup(ItemId="B00ZV9PXP2")
@@ -463,9 +457,6 @@ class TestAmazonApi(unittest.TestCase):
 
         product = self.amazon.lookup(ItemId="B00ZV9PXP2") # late availability
         assert_equals(product.availability_type, 'now')
-
-        product = self.amazon.lookup(ItemId="B01LTHP2ZK") # unavailable
-        assert_true(product.availability_type is None)
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_availability_min_max_hours(self):
