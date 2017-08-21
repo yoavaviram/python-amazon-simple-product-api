@@ -177,7 +177,7 @@ class AmazonAPI(object):
             code = root.Items.Request.Errors.Error.Code
             msg = root.Items.Request.Errors.Error.Message
             raise LookupException(
-                "Amazon Product Lookup Error: '{0}', '{1}'".format(code, msg))
+                u"Amazon Product Lookup Error: '{0}', '{1}'".format(code, msg))
         if not hasattr(root.Items, 'Item'):
             raise AsinNotFound("ASIN(s) not found: '{0}'".format(
                 etree.tostring(root, pretty_print=True)))
