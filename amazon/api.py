@@ -1397,6 +1397,24 @@ class AmazonProduct(LXMLWrapper):
             Number of offers - New (string)\
         """
         return self._safe_get_element_text('OfferSummary.TotalNew')
+    
+    @property
+    def is_eligible_for_super_saver_shipping(self):
+        """IsEligibleForSuperSaverShipping
+
+        :return:
+            IsEligibleForSuperSaverShipping (Bool).
+        """
+        return self._safe_get_element_text('Offers.Offer.OfferListing.IsEligibleForSuperSaverShipping')
+
+    @property
+    def is_eligible_for_prime(self):
+        """IsEligibleForPrime
+
+		:return:
+			IsEligibleForPrime (Bool).
+		"""
+        return self._safe_get_element_text('Offers.Offer.OfferListing.IsEligibleForPrime')
 
 
 class AmazonCart(LXMLWrapper):
