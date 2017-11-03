@@ -654,7 +654,7 @@ class AmazonBrowseNode(LXMLWrapper):
     A list of this browse node's children in the browse node tree.
     """
         children = []
-        child_nodes = getattr(self.parsed_response, 'Children')
+        child_nodes = getattr(self.parsed_response, 'Children', [])
         for child in getattr(child_nodes, 'BrowseNode', []):
             children.append(AmazonBrowseNode(child))
         return children
