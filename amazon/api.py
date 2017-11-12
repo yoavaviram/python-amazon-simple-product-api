@@ -743,22 +743,13 @@ class AmazonProduct(LXMLWrapper):
         return self._safe_get_element_text('ASIN')
 
     @property
-    def total_offers(self):
-        """Total offers
-
-        :return:
-            Total offers (integer).
-        """
-        return self._safe_get_element_text('Offers.TotalOffers')
-
-    @property
     def total_new(self):
         """Total offers
 
         :return:
             Total offers (integer).
         """
-        return self._safe_get_element_text('Offers.TotalNew')
+        return self._safe_get_element_text('OfferSummary.TotalNew')
 
     @property
     def total_used(self):
@@ -767,7 +758,7 @@ class AmazonProduct(LXMLWrapper):
         :return:
             Total used (integer).
         """
-        return self._safe_get_element_text('Offers.TotalUsed')
+        return self._safe_get_element_text('OfferSummary.TotalUsed')
 
     @property
     def total_refurbished(self):
@@ -776,7 +767,7 @@ class AmazonProduct(LXMLWrapper):
         :return:
             Total refurbished (integer).
         """
-        return self._safe_get_element_text('Offers.TotalRefurbished')
+        return self._safe_get_element_text('OfferSummary.TotalRefurbished')
 
     @property
     def total_collectible(self):
@@ -785,7 +776,7 @@ class AmazonProduct(LXMLWrapper):
         :return:
             Total collectible (integer).
         """
-        return self._safe_get_element_text('Offers.TotalCollectible')
+        return self._safe_get_element_text('OfferSummary.TotalCollectible')
 
     @property
     def item_height(self):
