@@ -332,7 +332,7 @@ class AmazonAPI(object):
             An :class:`~.AmazonCart`.
         """
         if not CartId or not HMAC:
-            raise CartException('CartId required for CartClear call')
+            raise CartException('CartId and HMAC required for CartAdd call')
 
         if isinstance(items, dict):
             items = [items]
