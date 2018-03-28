@@ -1140,6 +1140,34 @@ class AmazonProduct(LXMLWrapper):
         else:
             return None, None
 
+    @property
+    def alternate_versions(self):
+        """AlternateVersions.
+
+        Returns a list of dicts of items. Used for a search or lookup
+        using the `ResponseGroup="AlternateVersions"` keyword argument.
+
+        :return:
+            Returns a list of dicts with the keys 'asin', 'title', and
+            'binding.
+        """
+
+        def version_dict(version):
+            asin = self._safe_get_element_text('ASIN', root=version)
+            title = self._safe_get_element_text('Title', root=version)
+            binding = self._safe_get_element_text('Binding', root=version)
+            return {'asin': asin,
+                    'title': title,
+                    'binding': binding}
+
+        alternates_elm = self._safe_get_element('AlternateVersions')
+        if alternates_elm is not None:
+            versions = [version_dict(version)
+                        for version in alternates_elm.getchildren()]
+            return versions
+        else:
+            return []
+
     def get_attribute(self, name):
         """Get Attribute
 
