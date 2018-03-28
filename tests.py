@@ -481,6 +481,29 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(type(product.images), list)
         assert_equals(len(product.images), 7)
 
+    @flaky(max_runs=3, rerun_filter=delay_rerun)
+    def test_alternate_versions(self):
+        """Test alternate_versions property
+
+        Test that the images property has a value when using the
+        AlternateVersions ResponseGroup.
+
+        This test tries to be as perminant as possible. It doesn't
+        depend on any specific results that could be ruined if a new
+        version is added that ends up being the first one in the list,
+        instead only checking that an alternate version is returned
+        and that it has the right properties.
+        """
+        product = self.amazon.lookup(ResponseGroup='AlternateVersions',
+                                     ItemId='1491914254')
+        assert_equals(type(product.alternate_versions), list)
+        assert_true(len(product.alternate_versions) > 0)
+        assert_equals(type(product.alternate_versions[0]), dict)
+        assert_equals(len(product.alternate_versions[0]), 3)
+        assert_true('asin' in product.alternate_versions[0].keys())
+        assert_true('title' in product.alternate_versions[0].keys())
+        assert_true('binding' in product.alternate_versions[0].keys())
+
 
 class TestAmazonCart(unittest.TestCase):
     def setUp(self):
