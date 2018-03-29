@@ -256,7 +256,7 @@ class AmazonAPI(object):
         response = self.api.BrowseNodeLookup(
             ResponseGroup=ResponseGroup, **kwargs)
         root = objectify.fromstring(response)
-        if root.BrowseNodes.Request.IsValid == 'False':
+        if hasattr(root.BrowseNodes.Request, 'Errors'):
             code = root.BrowseNodes.Request.Errors.Error.Code
             msg = root.BrowseNodes.Request.Errors.Error.Message
             raise BrowseNodeLookupException(

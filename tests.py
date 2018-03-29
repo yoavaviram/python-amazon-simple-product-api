@@ -14,7 +14,8 @@ from amazon.api import (AmazonAPI,
                         CartInfoMismatchException,
                         SearchException,
                         AmazonSearch,
-                        AsinNotFound)
+                        AsinNotFound,
+                        BrowseNodeLookupException)
 
 _AMAZON_ACCESS_KEY = None
 _AMAZON_SECRET_KEY = None
@@ -214,7 +215,6 @@ class TestAmazonApi(unittest.TestCase):
             pass
         assert_true(products.is_last_page)
 
-
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_search_no_results(self):
         """Test Product Search with no results.
@@ -288,6 +288,10 @@ class TestAmazonApi(unittest.TestCase):
         assert_equals(bn.id, bnid)
         assert_equals(bn.name, 'eBook Readers')
         assert_equals(bn.is_category_root, False)
+        invalid_bnid = 1036682
+        assert_raises(BrowseNodeLookupException,
+                      self.amazon.browse_node_lookup,
+                      BrowseNodeId=invalid_bnid)
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_obscure_date(self):
@@ -432,7 +436,7 @@ class TestAmazonApi(unittest.TestCase):
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_is_preorder(self):
         product = self.amazon.lookup(ItemId="B01NBTSVDN")
-        assert_equals(product.is_preorder , None)
+        assert_equals(product.is_preorder, None)
 
     @flaky(max_runs=3, rerun_filter=delay_rerun)
     def test_detail_page_url(self):
@@ -463,7 +467,6 @@ class TestAmazonApi(unittest.TestCase):
         product = self.amazon.lookup(ItemId="B00ZV9PXP2")
         assert_equals(product.availability_min_hours, '0')
         assert_equals(product.availability_max_hours, '0')
-
 
     def test_kwargs(self):
         amazon = AmazonAPI(_AMAZON_ACCESS_KEY, _AMAZON_SECRET_KEY,
