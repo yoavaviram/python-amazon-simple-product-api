@@ -177,7 +177,7 @@ class AmazonAPI(object):
             code = root.Items.Request.Errors.Error.Code
             msg = root.Items.Request.Errors.Error.Message
             raise LookupException(
-                "Amazon Product Lookup Error: '{0}', '{1}'".format(code, msg))
+                u"Amazon Product Lookup Error: '{0}', '{1}'".format(code, msg))
         if not hasattr(root.Items, 'Item'):
             raise AsinNotFound("ASIN(s) not found: '{0}'".format(
                 etree.tostring(root, pretty_print=True)))
@@ -332,7 +332,7 @@ class AmazonAPI(object):
             An :class:`~.AmazonCart`.
         """
         if not CartId or not HMAC:
-            raise CartException('CartId required for CartClear call')
+            raise CartException('CartId and HMAC required for CartAdd call')
 
         if isinstance(items, dict):
             items = [items]
