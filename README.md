@@ -167,10 +167,16 @@ To run the test suite please follow these steps:
 * Create a local file named: `test_settings.py` with the following variables set to the relevant values: `AMAZON_ACCESS_KEY`, `AMAZON_SECRET_KEY`, `AMAZON_ASSOC_TAG`
 * Run `nosetests`
 
-Contribution
-------------
-Contributors and committers are are welcome. Please message me.
+Pull Requests
+--------------
 
+* All code should be unit tested
+* All tests must pass
+* Source code should be PEP8 complient 
+* Coverage shouldn't decrease
+* All Pull Requests should be rebased against master before submitting the PR
+
+**This project is looking for core contributors. Please message me.**
 
 License
 -------
