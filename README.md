@@ -6,6 +6,9 @@ A simple Python wrapper for the Amazon.com Product Advertising API.
 [![Documentation Status](https://readthedocs.org/projects/python-amazon-simple-product-api/badge/?version=latest)](http://python-amazon-simple-product-api.readthedocs.org/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/yoavaviram/python-amazon-simple-product-api/badge.svg?branch=master&bust=1)](https://coveralls.io/github/yoavaviram/python-amazon-simple-product-api?branch=master)
 [![PyPI version](https://badge.fury.io/py/python-amazon-simple-product-api.svg)](https://badge.fury.io/py/python-amazon-simple-product-api)
+![PyPI - License](https://img.shields.io/pypi/l/python-amazon-simple-product-api.svg)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/python-amazon-simple-product-api.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/python-amazon-simple-product-api.svg)
 [![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
 
 Features
