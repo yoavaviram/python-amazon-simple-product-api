@@ -654,7 +654,7 @@ class AmazonBrowseNode(LXMLWrapper):
     A list of this browse node's children in the browse node tree.
     """
         children = []
-        child_nodes = getattr(self.parsed_response, 'Children')
+        child_nodes = getattr(self.parsed_response, 'Children', [])
         for child in getattr(child_nodes, 'BrowseNode', []):
             children.append(AmazonBrowseNode(child))
         return children
@@ -741,6 +741,114 @@ class AmazonProduct(LXMLWrapper):
             ASIN (string).
         """
         return self._safe_get_element_text('ASIN')
+
+    @property
+    def total_new(self):
+        """Total offers
+
+        :return:
+            Total offers (integer).
+        """
+        return self._safe_get_element_text('OfferSummary.TotalNew')
+
+    @property
+    def total_used(self):
+        """Total used
+
+        :return:
+            Total used (integer).
+        """
+        return self._safe_get_element_text('OfferSummary.TotalUsed')
+
+    @property
+    def total_refurbished(self):
+        """Total refurbished
+
+        :return:
+            Total refurbished (integer).
+        """
+        return self._safe_get_element_text('OfferSummary.TotalRefurbished')
+
+    @property
+    def total_collectible(self):
+        """Total collectible
+
+        :return:
+            Total collectible (integer).
+        """
+        return self._safe_get_element_text('OfferSummary.TotalCollectible')
+
+    @property
+    def item_height(self):
+        """Item height
+
+        :return:
+            Item height (integer).
+        """
+        return self._safe_get_element_text('ItemAttributes.ItemDimensions.Height')
+
+    @property
+    def item_width(self):
+        """Item width
+
+        :return:
+            Item width (integer).
+        """
+        return self._safe_get_element_text('ItemAttributes.ItemDimensions.Width')
+
+    @property
+    def item_length(self):
+        """Item length
+
+        :return:
+            Item length (integer).
+        """
+        return self._safe_get_element_text('ItemAttributes.ItemDimensions.Length')
+
+    @property
+    def item_weight(self):
+        """Item weight
+
+        :return:
+            Item weight (integer).
+        """
+        return self._safe_get_element_text('ItemAttributes.ItemDimensions.Weight')
+
+    @property
+    def package_height(self):
+        """Package height
+
+        :return:
+            Package height (integer).
+        """
+        return self._safe_get_element_text('ItemAttributes.PackageDimensions.Height')
+
+    @property
+    def package_width(self):
+        """Package width
+
+        :return:
+            Package width (integer).
+        """
+        return self._safe_get_element_text('ItemAttributes.PackageDimensions.Width')
+
+    @property
+    def package_length(self):
+        """Package length
+
+        :return:
+            Package length (integer).
+        """
+        return self._safe_get_element_text('ItemAttributes.PackageDimensions.Length')
+
+    @property
+    def package_weight(self):
+        """Package weight
+
+        :return:
+            Package weight (integer).
+        """
+        return self._safe_get_element_text('ItemAttributes.PackageDimensions.Weight')
 
     @property
     def sales_rank(self):
