@@ -752,6 +752,26 @@ class AmazonProduct(LXMLWrapper):
         return self._safe_get_element_text('SalesRank')
 
     @property
+    def super_saver_shipping(self):
+        """Super Saver Shipping
+
+        :return:
+            Super Saver Shipping (boolean).
+        """
+        return self._safe_get_element_text(
+            'Offers.Offer.OfferListing.IsEligibleForSuperSaverShipping')
+
+    @property
+    def prime(self):
+        """Prime
+
+        :return:
+            Prime (boolean).
+        """
+        return self._safe_get_element_text(
+            'Offers.Offer.OfferListing.IsEligibleForPrime')
+
+    @property
     def offer_url(self):
         """Offer URL
 
