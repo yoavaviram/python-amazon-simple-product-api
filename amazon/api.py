@@ -684,6 +684,21 @@ class AmazonProduct(LXMLWrapper):
         return self.title
 
     @property
+    def similar_products(self):
+        """SimlarProducts.
+        
+        :return:
+            List Of ASIN Similar Products (list)
+        """
+
+        result = []
+        similar_products = self._safe_get_element('SimilarProducts.SimilarProduct')
+        if similar_products is not None:
+            for similar_product in similar_products:
+                result.append(similar_product.ASIN.text)
+        return result
+
+    @property
     def price_and_currency(self):
         """Get Offer Price and Currency.
 
