@@ -113,6 +113,8 @@ class TestAmazonApi(unittest.TestCase):
         product = self.amazon.lookup(ItemId="B00ZV9PXP2")
         assert_true('Kindle' in product.title)
         assert_equals(product.ean, '0848719083774')
+        assert_true(len(product.eans) > 0)
+        assert_true(len(product.upcs) >= 0)
         assert_equals(
             product.large_image_url,
             'https://images-na.ssl-images-amazon.com/images/I/51hrdzXLUHL.jpg'
