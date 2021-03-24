@@ -11,6 +11,10 @@ A simple Python wrapper for the Amazon.com Product Advertising API.
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/python-amazon-simple-product-api.svg)
 [![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
 
+WARNING
+--------
+**This module no longer works since Amazon updated its API, please use [this one](https://github.com/sergioteula/python-amazon-paapi) instead.**
+
 Features
 --------
 
